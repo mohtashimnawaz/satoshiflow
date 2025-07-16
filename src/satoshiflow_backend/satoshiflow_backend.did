@@ -1,3 +1,136 @@
+type StreamStatus = variant { Active; Paused; Cancelled; Completed; };
+
+type Stream = record {
+    id: nat64;
+    sender: principal;
+    recipient: principal;
+    sats_per_sec: nat64;
+    start_time: nat64;
+    end_time: nat64;
+    total_locked: nat64;
+    total_released: nat64;
+    last_release_time: nat64;
+    buffer: nat64;
+    status: StreamStatus;
+    last_claim_time: nat64;
+    title: opt text;
+    description: opt text;
+    tags: vec text;
+    metadata: vec record { text; text };
+};
+
+type StreamTemplate = record {
+    id: nat64;
+    name: text;
+    description: text;
+    duration_secs: nat64;
+    sats_per_sec: nat64;
+    creator: principal;
+    created_at: nat64;
+    usage_count: nat64;
+};
+
+type NotificationType = variant { 
+    StreamCreated; 
+    StreamClaimed; 
+    StreamTopUp; 
+    StreamCancelled; 
+    StreamCompleted; 
+    LowBalance; 
+    ClaimReminder; 
+};
+
+type Notification = record {
+    id: nat64;
+    user: principal;
+    stream_id: nat64;
+    notification_type: NotificationType;
+    message: text;
+    timestamp: nat64;
+    read: bool;
+};
+
+type StreamStats = record {
+    total_streams_created: nat64;
+    total_volume_locked: nat64;
+    total_volume_claimed: nat64;
+    active_streams: nat64;
+    completed_streams: nat64;
+    cancelled_streams: nat64;
+    average_stream_duration: nat64;
+    total_fees_collected: nat64;
+};
+
+type UserStats = record {
+    user: principal;
+    streams_created: nat64;
+    streams_received: nat64;
+    total_sent: nat64;
+    total_received: nat64;
+    total_fees_paid: nat64;
+    avg_stream_size: nat64;
+};
+
+type MilestoneAction = variant {
+    SendNotification: text;
+    AutoClaim;
+    PauseStream;
+    TopUpStream: nat64;
+};
+
+type Milestone = record {
+    id: nat64;
+    stream_id: nat64;
+    trigger_amount: nat64;
+    action: MilestoneAction;
+    triggered: bool;
+    created_by: principal;
+};
+
+type StreamFilter = record {
+    status: opt StreamStatus;
+    min_amount: opt nat64;
+    max_amount: opt nat64;
+    min_duration: opt nat64;
+    max_duration: opt nat64;
+    sender: opt principal;
+    recipient: opt principal;
+    created_after: opt nat64;
+    created_before: opt nat64;
+};
+
 service : {
+    // Basic stream operations
     "greet": (text) -> (text) query;
-}
+    "create_stream": (principal, nat64, nat64, nat64) -> (nat64);
+    "claim_stream": (nat64) -> (variant { ok: nat64; err: text });
+    "top_up_stream": (nat64, nat64) -> (variant { ok: null; err: text });
+    "cancel_stream": (nat64) -> (variant { ok: record { refund: nat64; fee: nat64 }; err: text });
+    "reclaim_unclaimed": (nat64) -> (variant { ok: nat64; err: text });
+    "get_stream": (nat64) -> (opt Stream) query;
+    "list_streams_for_user": (principal) -> (vec Stream) query;
+    
+    // Stream control
+    "pause_stream": (nat64) -> (variant { ok: null; err: text });
+    "resume_stream": (nat64) -> (variant { ok: null; err: text });
+    
+    // Template management
+    "create_template": (text, text, nat64, nat64) -> (variant { ok: nat64; err: text });
+    "create_stream_from_template": (nat64, principal, nat64) -> (nat64);
+    "list_templates": () -> (vec StreamTemplate) query;
+    
+    // Notifications
+    "get_notifications": () -> (vec Notification) query;
+    "mark_notification_read": (nat64) -> (bool);
+    
+    // Statistics
+    "get_global_stats": () -> (StreamStats) query;
+    "get_user_stats": (principal) -> (opt UserStats) query;
+    "get_stream_stats": (nat64) -> (opt StreamStats) query;
+    
+    // Milestones
+    "add_milestone": (nat64, nat64, MilestoneAction) -> (nat64);
+    
+    // Search and filtering
+    "search_streams": (StreamFilter) -> (vec Stream) query;
+};
