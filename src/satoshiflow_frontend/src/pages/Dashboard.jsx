@@ -14,6 +14,7 @@ import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import { useAuth } from '../contexts/AuthContext';
 import StreamCard from '../components/StreamCard';
 import StatCard from '../components/StatCard';
+import QuickActionCard from '../components/QuickActionCard';
 
 const Dashboard = () => {
   const [recentStreams, setRecentStreams] = useState([]);
@@ -203,50 +204,30 @@ const Dashboard = () => {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Link
+        <QuickActionCard
           to="/create"
-          className="bg-white/90 backdrop-blur-sm border border-slate-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 hover:transform hover:scale-105 cursor-pointer group"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="bg-orange-50 p-3 rounded-lg">
-              <Plus className="h-6 w-6 text-orange-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">Create Stream</h3>
-              <p className="text-sm text-gray-500">Start streaming Bitcoin payments</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
+          icon={Plus}
+          iconBg="bg-orange-50"
+          title="Create Stream"
+          description="Start streaming Bitcoin payments"
+          ariaLabel="Create a new Bitcoin stream"
+        />
+        <QuickActionCard
           to="/templates"
-          className="card hover:shadow-md transition-shadow cursor-pointer"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <Clock className="h-6 w-6 text-blue-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">Templates</h3>
-              <p className="text-sm text-gray-500">Use predefined stream templates</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
+          icon={Clock}
+          iconBg="bg-blue-50"
+          title="Templates"
+          description="Use predefined stream templates"
+          ariaLabel="View stream templates"
+        />
+        <QuickActionCard
           to="/analytics"
-          className="card hover:shadow-md transition-shadow cursor-pointer"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="bg-green-50 p-3 rounded-lg">
-              <TrendingUp className="h-6 w-6 text-green-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">Analytics</h3>
-              <p className="text-sm text-gray-500">View detailed statistics</p>
-            </div>
-          </div>
-        </Link>
+          icon={TrendingUp}
+          iconBg="bg-green-50"
+          title="Analytics"
+          description="View detailed statistics"
+          ariaLabel="View analytics"
+        />
       </div>
     </div>
   );

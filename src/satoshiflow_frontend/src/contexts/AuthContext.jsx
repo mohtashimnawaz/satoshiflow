@@ -15,24 +15,23 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [walletType, setWalletType] = useState(null); // 'plug' or null
 
   useEffect(() => {
-    // Check for existing authentication
-    const checkAuth = async () => {
-      try {
-        // In a real implementation, you'd check for stored credentials
-        // For now, we'll simulate a user principal
-        const userPrincipal = Principal.fromText('2vxsx-fae');
-        setUser(userPrincipal);
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Auth check failed:', error);
-      } finally {
-        setIsLoading(false);
+    // Check for existing Plug connection
+    const checkPlug = async () => {
+      if (window.ic && window.ic.plug) {
+        const isConnected = await window.ic.plug.isConnected();
+        if (isConnected) {
+          const principal = await window.ic.plug.getPrincipal();
+          setUser(principal);
+          setIsAuthenticated(true);
+          setWalletType('plug');
+        }
       }
+      setIsLoading(false);
     };
-
-    checkAuth();
+    checkPlug();
   }, []);
 
   const login = async (principal) => {
@@ -57,12 +56,44 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithPlug = async () => {
+    try {
+      if (!window.ic || !window.ic.plug) {
+        alert('Plug Wallet is not installed!');
+        return false;
+      }
+      const connected = await window.ic.plug.requestConnect();
+      if (connected) {
+        const principal = await window.ic.plug.getPrincipal();
+        setUser(principal);
+        setIsAuthenticated(true);
+        setWalletType('plug');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Plug login failed:', error);
+      return false;
+    }
+  };
+
+  const logoutPlug = async () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    setWalletType(null);
+    // Plug does not have a disconnect method; just clear app state
+    return true;
+  };
+
   const value = {
     user,
     isAuthenticated,
     isLoading,
+    walletType,
     login,
     logout,
+    loginWithPlug,
+    logoutPlug,
   };
 
   return (

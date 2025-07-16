@@ -16,7 +16,7 @@ import { useNotifications } from '../contexts/NotificationContext';
 
 const Navbar = () => {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, isAuthenticated, walletType, loginWithPlug, logoutPlug } = useAuth();
   const { unreadCount } = useNotifications();
 
   const navItems = [
@@ -69,22 +69,33 @@ const Navbar = () => {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-3 bg-slate-100 px-3 py-2 rounded-xl">
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                <User size={16} className="text-white" />
-              </div>
-              <span className="text-sm font-mono text-slate-700">
-                {user?.toString().slice(0, 8)}...
-              </span>
-            </div>
-            
-            <button
-              onClick={logout}
-              className="flex items-center space-x-2 px-4 py-2 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
-            >
-              <Settings size={16} />
-              <span className="hidden md:inline">Logout</span>
-            </button>
+            {isAuthenticated && walletType === 'plug' ? (
+              <>
+                <div className="hidden md:flex items-center space-x-3 bg-slate-100 px-3 py-2 rounded-xl">
+                  <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+                    <User size={16} className="text-white" />
+                  </div>
+                  <span className="text-sm font-mono text-slate-700">
+                    {user?.toString().slice(0, 8)}...
+                  </span>
+                </div>
+                <button
+                  onClick={logoutPlug}
+                  className="flex items-center space-x-2 px-4 py-2 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
+                >
+                  <Settings size={16} />
+                  <span className="hidden md:inline">Logout</span>
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={loginWithPlug}
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              >
+                <Wallet size={16} />
+                <span>Connect Plug Wallet</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
