@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Principal } from '@dfinity/principal';
+import { AuthClient } from '@dfinity/auth-client';
 
 const AuthContext = createContext();
 
@@ -15,11 +16,12 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [walletType, setWalletType] = useState(null); // 'plug' or null
+  const [walletType, setWalletType] = useState(null); // 'plug', 'ii', or null
 
   useEffect(() => {
-    // Check for existing Plug connection
-    const checkPlug = async () => {
+    // Check for existing Plug or II connection
+    const checkAuth = async () => {
+      // Plug
       if (window.ic && window.ic.plug) {
         const isConnected = await window.ic.plug.isConnected();
         if (isConnected) {
@@ -27,11 +29,25 @@ export const AuthProvider = ({ children }) => {
           setUser(principal);
           setIsAuthenticated(true);
           setWalletType('plug');
+          setIsLoading(false);
+          return;
         }
+      }
+      // Internet Identity
+      const authClient = await AuthClient.create();
+      const isAuthenticatedII = await authClient.isAuthenticated();
+      if (isAuthenticatedII) {
+        const identity = authClient.getIdentity();
+        const principal = identity.getPrincipal();
+        setUser(principal);
+        setIsAuthenticated(true);
+        setWalletType('ii');
+        setIsLoading(false);
+        return;
       }
       setIsLoading(false);
     };
-    checkPlug();
+    checkAuth();
   }, []);
 
   const login = async (principal) => {
@@ -56,6 +72,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Plug login/logout (existing)
   const loginWithPlug = async () => {
     try {
       if (!window.ic || !window.ic.plug) {
@@ -81,7 +98,38 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setIsAuthenticated(false);
     setWalletType(null);
-    // Plug does not have a disconnect method; just clear app state
+    return true;
+  };
+
+  // Internet Identity login/logout
+  const loginWithII = async () => {
+    try {
+      const authClient = await AuthClient.create();
+      await authClient.login({
+        identityProvider: process.env.DFX_NETWORK === 'ic'
+          ? 'https://identity.ic0.app/#authorize'
+          : 'http://uzt4z-lp777-77774-qaabq-cai.localhost:4943/',
+        onSuccess: async () => {
+          const identity = authClient.getIdentity();
+          const principal = identity.getPrincipal();
+          setUser(principal);
+          setIsAuthenticated(true);
+          setWalletType('ii');
+        },
+      });
+      return true;
+    } catch (error) {
+      console.error('Internet Identity login failed:', error);
+      return false;
+    }
+  };
+
+  const logoutII = async () => {
+    const authClient = await AuthClient.create();
+    await authClient.logout();
+    setUser(null);
+    setIsAuthenticated(false);
+    setWalletType(null);
     return true;
   };
 
@@ -94,6 +142,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     loginWithPlug,
     logoutPlug,
+    loginWithII,
+    logoutII,
   };
 
   return (

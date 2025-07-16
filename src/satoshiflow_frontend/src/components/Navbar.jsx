@@ -16,7 +16,7 @@ import { useNotifications } from '../contexts/NotificationContext';
 
 const Navbar = () => {
   const location = useLocation();
-  const { user, isAuthenticated, walletType, loginWithPlug, logoutPlug } = useAuth();
+  const { user, isAuthenticated, walletType, loginWithPlug, logoutPlug, loginWithII, logoutII } = useAuth();
   const { unreadCount } = useNotifications();
 
   const navItems = [
@@ -68,33 +68,48 @@ const Navbar = () => {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center space-x-4">
-            {isAuthenticated && walletType === 'plug' ? (
+          <div className="flex items-center gap-2">
+            {isAuthenticated ? (
               <>
-                <div className="hidden md:flex items-center space-x-3 bg-slate-100 px-3 py-2 rounded-xl">
+                <div className="hidden md:flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-xl">
                   <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
                     <User size={16} className="text-white" />
                   </div>
                   <span className="text-sm font-mono text-slate-700">
                     {user?.toString().slice(0, 8)}...
                   </span>
+                  <span className="ml-2 text-xs px-2 py-1 rounded bg-orange-100 text-orange-600 font-semibold uppercase">
+                    {walletType === 'plug' ? 'Plug' : walletType === 'ii' ? 'II' : ''}
+                  </span>
                 </div>
                 <button
-                  onClick={logoutPlug}
-                  className="flex items-center space-x-2 px-4 py-2 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
+                  onClick={walletType === 'plug' ? logoutPlug : logoutII}
+                  className="flex items-center space-x-2 px-4 py-2 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 h-12"
+                  style={{ minWidth: '120px' }}
                 >
                   <Settings size={16} />
                   <span className="hidden md:inline">Logout</span>
                 </button>
               </>
             ) : (
-              <button
-                onClick={loginWithPlug}
-                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-              >
-                <Wallet size={16} />
-                <span>Connect Plug Wallet</span>
-              </button>
+              <>
+                <button
+                  onClick={loginWithPlug}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 h-12"
+                  style={{ minWidth: '170px' }}
+                >
+                  <Wallet size={16} />
+                  <span>Connect Plug Wallet</span>
+                </button>
+                <button
+                  onClick={loginWithII}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 h-12"
+                  style={{ minWidth: '200px' }}
+                >
+                  <User size={16} />
+                  <span>Connect Internet Identity</span>
+                </button>
+              </>
             )}
           </div>
         </div>
