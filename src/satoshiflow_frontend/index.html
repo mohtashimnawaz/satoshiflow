@@ -3,8 +3,50 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width" />
-  <title>IC Hello Starter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SatoshiFlow - Bitcoin Streaming Platform" />
+  <meta name="theme-color" content="#f7931a" />
+  
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:;
+    style-src 'self' 'unsafe-inline' https: data:;
+    img-src 'self' data: https: blob:;
+    font-src 'self' data: https:;
+    connect-src 'self' https: wss: ws: data: blob:;
+    media-src 'self' data: blob:;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+  " />
+  
+  <!-- Permissions Policy -->
+  <meta http-equiv="Permissions-Policy" content="
+    ambient-light-sensor=(),
+    battery=(),
+    camera=(),
+    document-domain=(),
+    execution-while-not-rendered=(),
+    execution-while-out-of-viewport=(),
+    fullscreen=(),
+    geolocation=(),
+    gyroscope=(),
+    magnetometer=(),
+    microphone=(),
+    navigation-override=(),
+    speaker-selection=(),
+    conversion-measurement=(),
+    focus-without-user-activation=(),
+    sync-script=(),
+    trust-token-redemption=(),
+    window-placement=(),
+    vertical-scroll=()
+  " />
+  
+  <title>SatoshiFlow - Bitcoin Streaming Platform</title>
   <base href="/" />
   <link rel="icon" href="/favicon.ico" />
 </head>
