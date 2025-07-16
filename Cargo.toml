@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/satoshiflow_backend"
+]
+resolver = "2"
