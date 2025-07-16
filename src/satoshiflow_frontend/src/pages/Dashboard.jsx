@@ -82,16 +82,18 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Welcome back to SatoshiFlow</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          <p className="text-slate-600 mt-2 text-lg">Welcome back to your Bitcoin streaming platform</p>
         </div>
         <Link
           to="/create"
-          className="mt-4 md:mt-0 inline-flex items-center space-x-2 btn-primary"
+          className="mt-6 md:mt-0 inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 group"
         >
-          <Plus size={20} />
+          <Plus size={20} className="group-hover:rotate-90 transition-transform duration-200" />
           <span>Create Stream</span>
         </Link>
       </div>
@@ -141,21 +143,21 @@ const Dashboard = () => {
         </div>
         
         {recentStreams.length === 0 ? (
-          <div className="text-center py-12">
-            <Wallet className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No streams yet</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Get started by creating your first stream.
-            </p>
-            <div className="mt-6">
-              <Link
-                to="/create"
-                className="btn-primary"
-              >
-                <Plus size={20} className="mr-2" />
-                Create Stream
-              </Link>
+          <div className="text-center py-16">
+            <div className="bg-slate-100 rounded-full p-6 w-24 h-24 mx-auto mb-6">
+              <Wallet className="w-12 h-12 text-slate-400" />
             </div>
+            <h3 className="text-xl font-semibold text-slate-900 mb-2">No streams yet</h3>
+            <p className="text-slate-500 mb-8 max-w-md mx-auto">
+              Get started by creating your first Bitcoin stream and begin your decentralized finance journey.
+            </p>
+            <Link
+              to="/create"
+              className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+            >
+              <Plus size={20} />
+              <span>Create Your First Stream</span>
+            </Link>
           </div>
         ) : (
           <div className="space-y-4">
@@ -174,7 +176,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Link
           to="/create"
-          className="card hover:shadow-md transition-shadow cursor-pointer"
+          className="bg-white/90 backdrop-blur-sm border border-slate-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 hover:transform hover:scale-105 cursor-pointer group"
         >
           <div className="flex items-center space-x-3">
             <div className="bg-orange-50 p-3 rounded-lg">

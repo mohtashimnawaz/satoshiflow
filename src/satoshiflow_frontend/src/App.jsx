@@ -32,10 +32,16 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading SatoshiFlow...</p>
+          <div className="relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-500/20 border-t-orange-500 mx-auto mb-6"></div>
+            <div className="absolute inset-0 animate-pulse rounded-full h-16 w-16 bg-orange-500/10 mx-auto"></div>
+          </div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent mb-2">
+            SatoshiFlow
+          </h2>
+          <p className="text-slate-600">Loading your Bitcoin streaming platform...</p>
         </div>
       </div>
     );
@@ -45,9 +51,9 @@ function App() {
     <Router>
       <AuthProvider>
         <NotificationProvider>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
             <Navbar />
-            <main className="container mx-auto px-4 py-8">
+            <main className="container mx-auto px-4 py-8 max-w-7xl">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/create" element={<CreateStream />} />
