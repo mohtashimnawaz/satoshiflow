@@ -27,34 +27,63 @@ const Dashboard = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    fetchDashboardData();
+    if (user) {
+      fetchDashboardData();
+    } else {
+      // Reset states if no user
+      setRecentStreams([]);
+      setStats({
+        totalSent: 0,
+        totalReceived: 0,
+        activeStreams: 0,
+        totalStreams: 0,
+      });
+      setLoading(false);
+    }
   }, [user]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       
-      // Fetch recent streams
+      // Check if user is authenticated
+      if (!user) {
+        console.log('No user authenticated, skipping data fetch');
+        return;
+      }
+      
+      // Fetch recent streams with proper error handling
       const userStreams = await satoshiflow_backend.list_streams_for_user(user);
       
+      // Ensure userStreams is an array
+      const streamsArray = Array.isArray(userStreams) ? userStreams : [];
+      
       // Sort by creation time and take the 5 most recent
-      const sortedStreams = userStreams.sort((a, b) => b.start_time - a.start_time);
+      const sortedStreams = streamsArray.sort((a, b) => b.start_time - a.start_time);
       setRecentStreams(sortedStreams.slice(0, 5));
       
       // Calculate stats
-      const sentStreams = userStreams.filter(s => s.sender.toString() === user?.toString());
-      const receivedStreams = userStreams.filter(s => s.recipient.toString() === user?.toString());
-      const activeStreams = userStreams.filter(s => s.status === 'Active');
+      const sentStreams = streamsArray.filter(s => s.sender.toString() === user?.toString());
+      const receivedStreams = streamsArray.filter(s => s.recipient.toString() === user?.toString());
+      const activeStreams = streamsArray.filter(s => s.status === 'Active');
       
       setStats({
-        totalSent: sentStreams.reduce((sum, s) => sum + Number(s.total_locked), 0),
-        totalReceived: receivedStreams.reduce((sum, s) => sum + Number(s.total_released), 0),
+        totalSent: sentStreams.reduce((sum, s) => sum + Number(s.total_locked || 0), 0),
+        totalReceived: receivedStreams.reduce((sum, s) => sum + Number(s.total_released || 0), 0),
         activeStreams: activeStreams.length,
-        totalStreams: userStreams.length,
+        totalStreams: streamsArray.length,
       });
       
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      // Set empty states on error
+      setRecentStreams([]);
+      setStats({
+        totalSent: 0,
+        totalReceived: 0,
+        activeStreams: 0,
+        totalStreams: 0,
+      });
     } finally {
       setLoading(false);
     }
