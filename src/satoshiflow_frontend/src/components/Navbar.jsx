@@ -36,9 +36,12 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl p-2 group-hover:shadow-lg transition-all duration-200">
-              <Wallet size={24} />
-            </div>
+            <img
+              src="/logo.png"
+              alt="SatoshiFlow Logo"
+              className="h-10 w-10 object-contain drop-shadow-md"
+              style={{ minWidth: '40px' }}
+            />
             <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
               SatoshiFlow
             </span>
