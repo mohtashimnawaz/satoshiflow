@@ -72,12 +72,24 @@ const CreateStream = () => {
     return Math.floor(satsPerSec * durationSeconds);
   };
 
+  // Autofill recipient with current user's principal
+  const autofillRecipient = () => {
+    if (user && user.toText) {
+      setFormData(prev => ({
+        ...prev,
+        recipient: user.toText(),
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
+      // Log the user principal for debugging
+      console.log('Creating stream as user:', user && user.toText ? user.toText() : user);
       // Validate inputs
       if (!formData.recipient || !formData.satsPerSec || !formData.duration) {
         throw new Error('Please fill in all required fields');
@@ -162,6 +174,9 @@ const CreateStream = () => {
         <p className="text-gray-600 mt-2">
           Set up a new Bitcoin streaming payment
         </p>
+        <button type="button" className="btn-secondary mt-2" onClick={autofillRecipient}>
+          Autofill my Principal as Recipient
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

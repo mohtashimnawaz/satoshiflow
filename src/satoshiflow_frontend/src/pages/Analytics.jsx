@@ -29,6 +29,14 @@ import { useAuth } from '../contexts/AuthContext';
 import StatCard from '../components/StatCard';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 
+function principalToText(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p.toText === 'function') return p.toText();
+  if (typeof p.toString === 'function') return p.toString();
+  return String(p);
+}
+
 const Analytics = () => {
   const [timeRange, setTimeRange] = useState('7d');
   const [stats, setStats] = useState({
@@ -57,8 +65,8 @@ const Analytics = () => {
       const userStreams = await satoshiflow_backend.list_streams_for_user(user);
 
       // Calculate basic stats
-      const sentStreams = userStreams.filter(s => s.sender.toString() === user?.toString());
-      const receivedStreams = userStreams.filter(s => s.recipient.toString() === user?.toString());
+      const sentStreams = userStreams.filter(s => principalToText(s.sender) === user?.toText());
+      const receivedStreams = userStreams.filter(s => principalToText(s.recipient) === user?.toText());
       
       const totalSent = sentStreams.reduce((sum, s) => sum + Number(s.total_locked), 0);
       const totalReceived = receivedStreams.reduce((sum, s) => sum + Number(s.total_released), 0);
@@ -89,11 +97,11 @@ const Analytics = () => {
         });
         
         const sent = dayStreams
-          .filter(s => s.sender.toString() === user?.toString())
+          .filter(s => principalToText(s.sender) === user?.toText())
           .reduce((sum, s) => sum + Number(s.total_locked), 0);
         
         const received = dayStreams
-          .filter(s => s.recipient.toString() === user?.toString())
+          .filter(s => principalToText(s.recipient) === user?.toText())
           .reduce((sum, s) => sum + Number(s.total_released), 0);
         
         chartData.push({

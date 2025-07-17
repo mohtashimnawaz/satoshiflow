@@ -25,10 +25,18 @@ function deepBigIntToNumber(obj) {
   return obj;
 }
 
+function principalToText(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p.toText === 'function') return p.toText();
+  if (typeof p.toString === 'function') return p.toString();
+  return String(p);
+}
+
 const StreamCard = ({ stream, currentUser }) => {
   // Defensive: convert all BigInt fields to Number
   const safeStream = deepBigIntToNumber(stream);
-  const isOutgoing = safeStream.sender && safeStream.sender.toString() === currentUser?.toString();
+  const isOutgoing = principalToText(safeStream.sender) === principalToText(currentUser);
   const progress = safeStream.total_locked > 0 ? (safeStream.total_released / safeStream.total_locked) * 100 : 0;
 
   const getStatusIcon = (status) => {
@@ -68,7 +76,9 @@ const StreamCard = ({ stream, currentUser }) => {
   };
 
   const otherParty = isOutgoing ? safeStream.recipient : safeStream.sender;
-  const otherPartyDisplay = otherParty && otherParty.toString ? otherParty.toString().slice(0, 8) + '...' : 'N/A';
+  const otherPartyDisplay = otherParty && principalToText(otherParty).slice(0, 8) + '...';
+  const displayTitle = Array.isArray(safeStream.title) ? safeStream.title[0] : safeStream.title;
+  const displayDescription = Array.isArray(safeStream.description) ? safeStream.description[0] : safeStream.description;
 
   return (
     <Link
@@ -92,8 +102,8 @@ const StreamCard = ({ stream, currentUser }) => {
               <span className="font-medium text-gray-900">
                 {isOutgoing ? 'To' : 'From'}: {otherPartyDisplay}
               </span>
-              {safeStream.title && (
-                <span className="text-sm text-gray-500">• {safeStream.title}</span>
+              {displayTitle && (
+                <span className="text-sm text-gray-500">• {displayTitle}</span>
               )}
             </div>
             <div className="flex items-center space-x-4 mt-1">
@@ -134,9 +144,9 @@ const StreamCard = ({ stream, currentUser }) => {
         </div>
       </div>
 
-      {safeStream.description && (
+      {displayDescription && (
         <div className="mt-3 pt-3 border-t border-gray-100">
-          <p className="text-sm text-gray-600 truncate">{safeStream.description}</p>
+          <p className="text-sm text-gray-600 truncate">{displayDescription}</p>
         </div>
       )}
 

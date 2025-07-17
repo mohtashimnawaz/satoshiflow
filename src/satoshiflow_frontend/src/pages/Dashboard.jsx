@@ -16,6 +16,14 @@ import StreamCard from '../components/StreamCard';
 import StatCard from '../components/StatCard';
 import QuickActionCard from '../components/QuickActionCard';
 
+function principalToText(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p.toText === 'function') return p.toText();
+  if (typeof p.toString === 'function') return p.toString();
+  return String(p);
+}
+
 const Dashboard = () => {
   const [recentStreams, setRecentStreams] = useState([]);
   const [stats, setStats] = useState({
@@ -64,8 +72,8 @@ const Dashboard = () => {
       setRecentStreams(sortedStreams.slice(0, 5));
       
       // Calculate stats
-      const sentStreams = streamsArray.filter(s => s.sender.toString() === user?.toString());
-      const receivedStreams = streamsArray.filter(s => s.recipient.toString() === user?.toString());
+      const sentStreams = streamsArray.filter(s => principalToText(s.sender) === user?.toText());
+      const receivedStreams = streamsArray.filter(s => principalToText(s.recipient) === user?.toText());
       const activeStreams = streamsArray.filter(s => s.status === 'Active');
       
       setStats({

@@ -360,9 +360,13 @@ fn get_stream(stream_id: u64) -> Option<Stream> {
 
 #[ic_cdk::query]
 fn list_streams_for_user(user: Principal) -> Vec<Stream> {
+    ic_cdk::println!("list_streams_for_user called with principal: {:?}", user);
     STREAMS.with(|streams| {
-        streams
-            .borrow()
+        let map = streams.borrow();
+        for (id, stream) in map.iter() {
+            ic_cdk::println!("Stream {}: sender={:?}, recipient={:?}", id, stream.sender, stream.recipient);
+        }
+        map
             .values()
             .filter(|s| s.sender == user || s.recipient == user)
             .cloned()

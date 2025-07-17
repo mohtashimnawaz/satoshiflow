@@ -28,6 +28,15 @@ function deepBigIntToNumber(obj) {
   return obj;
 }
 
+// Utility: Convert principal (string or Principal) to text
+function principalToText(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p.toText === 'function') return p.toText();
+  if (typeof p.toString === 'function') return p.toString();
+  return String(p);
+}
+
 const StreamList = () => {
   const [streams, setStreams] = useState([]);
   const [filteredStreams, setFilteredStreams] = useState([]);
@@ -39,9 +48,20 @@ const StreamList = () => {
   const [showFilters, setShowFilters] = useState(false);
   
   const { user } = useAuth();
-
+  // Debug: Log the principal type and value
   useEffect(() => {
-    fetchStreams();
+    if (user) {
+      console.log('Frontend principal object:', user);
+      if (typeof user === 'object' && user.toText) {
+        console.log('Frontend principal (toText):', user.toText());
+      } else if (user && user.toString) {
+        console.log('Frontend principal (toString):', user.toString());
+      } else {
+        console.log('Frontend principal (raw):', user);
+      }
+    } else {
+      console.log('Frontend user is null/undefined:', user);
+    }
   }, [user]);
 
   useEffect(() => {
@@ -51,10 +71,13 @@ const StreamList = () => {
   const fetchStreams = async () => {
     try {
       setLoading(true);
+      // Debug: Log the type of user before calling backend
+      console.log('Calling list_streams_for_user with:', user, typeof user);
       const userStreams = await satoshiflow_backend.list_streams_for_user(user);
       // Deep convert BigInt fields to Number
       const safeStreams = Array.isArray(userStreams) ? userStreams.map(deepBigIntToNumber) : [];
       setStreams(safeStreams);
+      console.log('All streams:', safeStreams);
     } catch (error) {
       console.error('Failed to fetch streams:', error);
     } finally {
@@ -68,18 +91,25 @@ const StreamList = () => {
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(stream => 
-        (stream.title && stream.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (stream.description && stream.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        ((Array.isArray(stream.title) ? stream.title[0] : stream.title) && (Array.isArray(stream.title) ? stream.title[0] : stream.title).toLowerCase().includes(searchTerm.toLowerCase())) ||
+        ((Array.isArray(stream.description) ? stream.description[0] : stream.description) && (Array.isArray(stream.description) ? stream.description[0] : stream.description).toLowerCase().includes(searchTerm.toLowerCase())) ||
         (Array.isArray(stream.tags) && stream.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))) ||
-        (stream.sender && stream.sender.toString().includes(searchTerm)) ||
-        (stream.recipient && stream.recipient.toString().includes(searchTerm))
+        (stream.sender && principalToText(stream.sender).includes(searchTerm)) ||
+        (stream.recipient && principalToText(stream.recipient).includes(searchTerm))
       );
     }
 
     // Status filter
     if (statusFilter !== 'all') {
       filtered = filtered.filter(stream => {
-        const status = typeof stream.status === 'string' ? stream.status : (Array.isArray(stream.status) ? stream.status[0] : JSON.stringify(stream.status));
+        let status = stream.status;
+        if (typeof status === 'string') {
+          // ok
+        } else if (Array.isArray(status)) {
+          status = status[0];
+        } else if (typeof status === 'object' && status !== null) {
+          status = Object.keys(status)[0];
+        }
         return status && status.toLowerCase() === statusFilter.toLowerCase();
       });
     }
@@ -87,9 +117,9 @@ const StreamList = () => {
     // Type filter
     if (typeFilter !== 'all') {
       if (typeFilter === 'outgoing') {
-        filtered = filtered.filter(stream => stream.sender && stream.sender.toString() === user?.toString());
+        filtered = filtered.filter(stream => principalToText(stream.sender) === principalToText(user));
       } else if (typeFilter === 'incoming') {
-        filtered = filtered.filter(stream => stream.recipient && stream.recipient.toString() === user?.toString());
+        filtered = filtered.filter(stream => principalToText(stream.recipient) === principalToText(user));
       }
     }
 
@@ -113,6 +143,7 @@ const StreamList = () => {
       }
     });
 
+    console.log('Filtered streams:', filtered);
     setFilteredStreams(filtered);
   };
 
@@ -125,10 +156,10 @@ const StreamList = () => {
   const getTypeCount = (type) => {
     if (type === 'all') return streams.length;
     if (type === 'outgoing') {
-      return streams.filter(stream => stream.sender.toString() === user?.toString()).length;
+      return streams.filter(stream => principalToText(stream.sender) === principalToText(user)).length;
     }
     if (type === 'incoming') {
-      return streams.filter(stream => stream.recipient.toString() === user?.toString()).length;
+      return streams.filter(stream => principalToText(stream.recipient) === principalToText(user)).length;
     }
     return 0;
   };

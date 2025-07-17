@@ -33,6 +33,14 @@ function deepBigIntToNumber(obj) {
   return obj;
 }
 
+function principalToText(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p.toText === 'function') return p.toText();
+  if (typeof p.toString === 'function') return p.toString();
+  return String(p);
+}
+
 const StreamDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -236,8 +244,8 @@ const StreamDetails = () => {
     );
   }
 
-  const isOwner = stream && stream.sender && user ? stream.sender.toString() === user.toString() : false;
-  const isRecipient = stream && stream.recipient && user ? stream.recipient.toString() === user.toString() : false;
+  const isOwner = stream && stream.sender && user ? principalToText(stream.sender) === principalToText(user) : false;
+  const isRecipient = stream && stream.recipient && user ? principalToText(stream.recipient) === principalToText(user) : false;
   const progress = stream && Number(stream.total_locked) > 0 ? (Number(stream.total_released) / Number(stream.total_locked)) * 100 : 0;
   const remainingTime = stream && stream.end_time ? Number(stream.end_time) - (Date.now() / 1000) : 0;
   const isActive = stream && stream.status === 'Active';
@@ -412,7 +420,7 @@ const StreamDetails = () => {
                 <div>
                   <div className="text-sm text-gray-500">Sender</div>
                   <div className="font-mono text-sm">
-                    {stream.sender ? stream.sender.toString().slice(0, 16) : 'N/A'}...
+                    {stream.sender ? principalToText(stream.sender).slice(0, 16) : 'N/A'}...
                   </div>
                 </div>
               </div>
@@ -422,7 +430,7 @@ const StreamDetails = () => {
                 <div>
                   <div className="text-sm text-gray-500">Recipient</div>
                   <div className="font-mono text-sm">
-                    {stream.recipient ? stream.recipient.toString().slice(0, 16) : 'N/A'}...
+                    {stream.recipient ? principalToText(stream.recipient).slice(0, 16) : 'N/A'}...
                   </div>
                 </div>
               </div>

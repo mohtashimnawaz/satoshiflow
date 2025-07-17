@@ -14,6 +14,14 @@ import {
 import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import { useAuth } from '../contexts/AuthContext';
 
+function principalToText(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p.toText === 'function') return p.toText();
+  if (typeof p.toString === 'function') return p.toString();
+  return String(p);
+}
+
 const Templates = () => {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -148,12 +156,12 @@ const Templates = () => {
                 <div>
                   <h3 className="font-semibold text-gray-900">{template.name}</h3>
                   <p className="text-sm text-gray-500">
-                    Created by {template.creator.toString().slice(0, 8)}...
+                    Created by {principalToText(template.creator).slice(0, 8)}...
                   </p>
                 </div>
               </div>
               
-              {template.creator.toString() === user?.toString() && (
+              {principalToText(template.creator) === principalToText(user) && (
                 <div className="flex space-x-1">
                   <button className="p-1 hover:bg-gray-100 rounded">
                     <Edit className="h-4 w-4 text-gray-500" />

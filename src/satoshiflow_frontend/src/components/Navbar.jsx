@@ -14,6 +14,14 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 
+function principalToText(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p.toText === 'function') return p.toText();
+  if (typeof p.toString === 'function') return p.toString();
+  return String(p);
+}
+
 const Navbar = () => {
   const location = useLocation();
   const { user, isAuthenticated, walletType, loginWithPlug, logoutPlug, loginWithII, logoutII } = useAuth();
@@ -79,7 +87,7 @@ const Navbar = () => {
                 <User size={16} className="text-white" />
               </div>
               <span className="text-sm font-mono text-slate-700">
-                {user?.toString().slice(0, 8)}...
+                {principalToText(user).slice(0, 8)}...
               </span>
                   <span className="ml-2 text-xs px-2 py-1 rounded bg-orange-100 text-orange-600 font-semibold uppercase">
                     {walletType === 'plug' ? 'Plug' : walletType === 'ii' ? 'II' : ''}

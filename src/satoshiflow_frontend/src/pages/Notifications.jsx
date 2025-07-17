@@ -16,6 +16,14 @@ import {
 import { useNotifications } from '../contexts/NotificationContext';
 import { formatDistanceToNow } from 'date-fns';
 
+function principalToText(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p.toText === 'function') return p.toText();
+  if (typeof p.toString === 'function') return p.toString();
+  return String(p);
+}
+
 const Notifications = () => {
   const {
     notifications,
@@ -291,7 +299,7 @@ const Notifications = () => {
                       <span>Stream #{notification.stream_id}</span>
                       <span>•</span>
                       <span className="font-mono">
-                        {notification.user.toString().slice(0, 8)}...
+                        {principalToText(notification.user).slice(0, 8)}...
                       </span>
                     </div>
                     
