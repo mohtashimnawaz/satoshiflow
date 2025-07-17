@@ -19,6 +19,20 @@ import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDistanceToNow, format } from 'date-fns';
 
+// Utility: Deeply convert all BigInt fields to Number
+function deepBigIntToNumber(obj) {
+  if (typeof obj === 'bigint') return Number(obj);
+  if (Array.isArray(obj)) return obj.map(deepBigIntToNumber);
+  if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const k in obj) {
+      out[k] = deepBigIntToNumber(obj[k]);
+    }
+    return out;
+  }
+  return obj;
+}
+
 const StreamDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -38,8 +52,16 @@ const StreamDetails = () => {
     try {
       setLoading(true);
       const streamData = await satoshiflow_backend.get_stream(parseInt(id));
-      if (streamData) {
-        setStream(streamData);
+      console.log('Fetched streamData:', streamData);
+      // Patch: handle array/tuple return from backend
+      let stream = streamData;
+      if (Array.isArray(streamData)) {
+        stream = streamData[0];
+      }
+      if (stream) {
+        const safeStream = deepBigIntToNumber(stream);
+        console.log('Safe stream after conversion:', safeStream);
+        setStream(safeStream);
       } else {
         setError('Stream not found');
       }
@@ -214,13 +236,13 @@ const StreamDetails = () => {
     );
   }
 
-  const isOwner = stream.sender.toString() === user?.toString();
-  const isRecipient = stream.recipient.toString() === user?.toString();
-  const progress = stream.total_locked > 0 ? (stream.total_released / stream.total_locked) * 100 : 0;
-  const remainingTime = stream.end_time - (Date.now() / 1000);
-  const isActive = stream.status === 'Active';
-  const isPaused = stream.status === 'Paused';
-  const canClaim = isRecipient && stream.total_released > stream.buffer;
+  const isOwner = stream && stream.sender && user ? stream.sender.toString() === user.toString() : false;
+  const isRecipient = stream && stream.recipient && user ? stream.recipient.toString() === user.toString() : false;
+  const progress = stream && Number(stream.total_locked) > 0 ? (Number(stream.total_released) / Number(stream.total_locked)) * 100 : 0;
+  const remainingTime = stream && stream.end_time ? Number(stream.end_time) - (Date.now() / 1000) : 0;
+  const isActive = stream && stream.status === 'Active';
+  const isPaused = stream && stream.status === 'Paused';
+  const canClaim = isRecipient && stream && stream.total_released > stream.buffer;
 
   return (
     <div className="space-y-6">
@@ -235,10 +257,10 @@ const StreamDetails = () => {
           </button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              {stream.title || `Stream #${stream.id}`}
+              {Array.isArray(stream.title) ? stream.title[0] : (stream.title || `Stream #${stream.id}`)}
             </h1>
             <p className="text-gray-600">
-              {isOwner ? 'Outgoing' : 'Incoming'} • {stream.status}
+              {isOwner ? 'Outgoing' : 'Incoming'} • {typeof stream.status === 'string' ? stream.status : (Array.isArray(stream.status) ? stream.status[0] : JSON.stringify(stream.status))}
             </p>
           </div>
         </div>
@@ -272,7 +294,7 @@ const StreamDetails = () => {
                 stream.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
                 'bg-red-100 text-red-700'
               }`}>
-                {stream.status}
+                {typeof stream.status === 'string' ? stream.status : (Array.isArray(stream.status) ? stream.status[0] : JSON.stringify(stream.status))}
               </div>
             </div>
 
@@ -288,21 +310,21 @@ const StreamDetails = () => {
                 />
               </div>
               <div className="flex justify-between text-sm font-medium">
-                <span>{stream.total_released.toLocaleString()} sats</span>
-                <span>{stream.total_locked.toLocaleString()} sats</span>
+                <span>{stream.total_released !== undefined && stream.total_released !== null ? Number(stream.total_released).toLocaleString() : 'N/A'} sats</span>
+                <span>{stream.total_locked !== undefined && stream.total_locked !== null ? Number(stream.total_locked).toLocaleString() : 'N/A'} sats</span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-900">
-                  {stream.sats_per_sec.toLocaleString()}
+                  {stream.sats_per_sec !== undefined && stream.sats_per_sec !== null ? Number(stream.sats_per_sec).toLocaleString() : 'N/A'}
                 </div>
                 <div className="text-sm text-gray-500">sats/second</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-900">
-                  {Math.max(0, Math.floor(remainingTime / 60)).toLocaleString()}
+                  {remainingTime !== undefined && remainingTime !== null ? Math.max(0, Math.floor(remainingTime / 60)).toLocaleString() : 'N/A'}
                 </div>
                 <div className="text-sm text-gray-500">minutes left</div>
               </div>
@@ -390,7 +412,7 @@ const StreamDetails = () => {
                 <div>
                   <div className="text-sm text-gray-500">Sender</div>
                   <div className="font-mono text-sm">
-                    {stream.sender.toString().slice(0, 16)}...
+                    {stream.sender ? stream.sender.toString().slice(0, 16) : 'N/A'}...
                   </div>
                 </div>
               </div>
@@ -400,7 +422,7 @@ const StreamDetails = () => {
                 <div>
                   <div className="text-sm text-gray-500">Recipient</div>
                   <div className="font-mono text-sm">
-                    {stream.recipient.toString().slice(0, 16)}...
+                    {stream.recipient ? stream.recipient.toString().slice(0, 16) : 'N/A'}...
                   </div>
                 </div>
               </div>
@@ -410,7 +432,7 @@ const StreamDetails = () => {
                 <div>
                   <div className="text-sm text-gray-500">Started</div>
                   <div className="text-sm">
-                    {format(new Date(stream.start_time * 1000), 'MMM d, yyyy HH:mm')}
+                    {stream.start_time ? format(new Date(stream.start_time * 1000), 'MMM d, yyyy HH:mm') : 'N/A'}
                   </div>
                 </div>
               </div>
@@ -420,7 +442,7 @@ const StreamDetails = () => {
                 <div>
                   <div className="text-sm text-gray-500">Duration</div>
                   <div className="text-sm">
-                    {Math.floor((stream.end_time - stream.start_time) / 60)} minutes
+                    {stream.end_time ? Math.floor((stream.end_time - stream.start_time) / 60) : 'N/A'} minutes
                   </div>
                 </div>
               </div>
@@ -430,7 +452,7 @@ const StreamDetails = () => {
                 <div>
                   <div className="text-sm text-gray-500">Buffer</div>
                   <div className="text-sm">
-                    {stream.buffer.toLocaleString()} sats
+                    {stream.buffer !== undefined && stream.buffer !== null ? Number(stream.buffer).toLocaleString() : 'N/A'} sats
                   </div>
                 </div>
               </div>
@@ -462,25 +484,25 @@ const StreamDetails = () => {
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500">Total Locked</span>
                 <span className="text-sm font-medium">
-                  {stream.total_locked.toLocaleString()} sats
+                  {stream.total_locked !== undefined && stream.total_locked !== null ? Number(stream.total_locked).toLocaleString() : 'N/A'} sats
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500">Total Released</span>
                 <span className="text-sm font-medium">
-                  {stream.total_released.toLocaleString()} sats
+                  {stream.total_released !== undefined && stream.total_released !== null ? Number(stream.total_released).toLocaleString() : 'N/A'} sats
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500">Available to Claim</span>
                 <span className="text-sm font-medium">
-                  {Math.max(0, stream.total_released - stream.buffer).toLocaleString()} sats
+                  {stream.total_released !== undefined && stream.buffer !== undefined && stream.total_released !== null && stream.buffer !== null ? Math.max(0, Number(stream.total_released) - Number(stream.buffer)).toLocaleString() : 'N/A'} sats
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500">Remaining</span>
                 <span className="text-sm font-medium">
-                  {(stream.total_locked - stream.total_released).toLocaleString()} sats
+                  {stream.total_locked !== undefined && stream.total_released !== undefined && stream.total_locked !== null && stream.total_released !== null ? (Number(stream.total_locked) - Number(stream.total_released)).toLocaleString() : 'N/A'} sats
                 </span>
               </div>
             </div>

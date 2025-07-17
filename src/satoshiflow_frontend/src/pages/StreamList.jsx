@@ -231,7 +231,7 @@ const StreamList = () => {
                 <div className="flex items-center space-x-1">
                   <DollarSign size={14} />
                   <span>
-                    {streams.reduce((sum, s) => sum + Number(s.total_locked), 0).toLocaleString()} sats total
+                    {(() => { const total = streams.reduce((sum, s) => sum + Number(s.total_locked), 0); return total !== undefined && total !== null ? Number(total).toLocaleString() : 'N/A'; })()} sats total
                   </span>
                 </div>
               </div>

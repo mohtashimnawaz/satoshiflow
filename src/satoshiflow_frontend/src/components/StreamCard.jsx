@@ -13,7 +13,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 const StreamCard = ({ stream, currentUser }) => {
   const isOutgoing = stream.sender.toString() === currentUser?.toString();
-  const progress = stream.total_locked > 0 ? (stream.total_released / stream.total_locked) * 100 : 0;
+  const progress = Number(stream.total_locked) > 0 ? (Number(stream.total_released) / Number(stream.total_locked)) * 100 : 0;
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -46,7 +46,7 @@ const StreamCard = ({ stream, currentUser }) => {
   };
 
   const formatSats = (sats) => {
-    return new Intl.NumberFormat().format(sats);
+    return new Intl.NumberFormat().format(Number(sats));
   };
 
   const otherParty = isOutgoing ? stream.recipient : stream.sender;
@@ -92,7 +92,7 @@ const StreamCard = ({ stream, currentUser }) => {
         <div className="flex items-center space-x-4">
           <div className="text-right">
             <div className="text-sm font-medium text-gray-900">
-              {formatSats(stream.total_released)} / {formatSats(stream.total_locked)} sats
+              {stream.total_released !== undefined && stream.total_released !== null ? formatSats(Number(stream.total_released)) : 'N/A'} / {stream.total_locked !== undefined && stream.total_locked !== null ? formatSats(Number(stream.total_locked)) : 'N/A'} sats
             </div>
             <div className="flex items-center space-x-2 mt-1">
               <div className="w-20 bg-gray-200 rounded-full h-2">

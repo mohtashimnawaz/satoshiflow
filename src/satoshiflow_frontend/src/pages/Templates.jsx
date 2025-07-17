@@ -175,7 +175,7 @@ const Templates = () => {
                   <DollarSign className="h-4 w-4 mr-1" />
                   Rate
                 </span>
-                <span className="font-medium">{template.sats_per_sec.toLocaleString()} sats/sec</span>
+                <span className="font-medium">{template.sats_per_sec !== undefined && template.sats_per_sec !== null ? Number(template.sats_per_sec).toLocaleString() : 'N/A'} sats/sec</span>
               </div>
               
               <div className="flex items-center justify-between text-sm">
@@ -188,9 +188,7 @@ const Templates = () => {
               
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-500">Total Amount</span>
-                <span className="font-medium">
-                  {(template.sats_per_sec * template.duration_secs).toLocaleString()} sats
-                </span>
+                <span className="font-medium">{template.sats_per_sec !== undefined && template.duration_secs !== undefined && template.sats_per_sec !== null && template.duration_secs !== null ? (Number(template.sats_per_sec) * Number(template.duration_secs)).toLocaleString() : 'N/A'} sats</span>
               </div>
             </div>
 

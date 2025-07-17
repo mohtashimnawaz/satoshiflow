@@ -139,12 +139,13 @@ const Analytics = () => {
   };
 
   const formatSats = (sats) => {
-    if (sats >= 1000000) {
-      return `${(sats / 1000000).toFixed(1)}M`;
-    } else if (sats >= 1000) {
-      return `${(sats / 1000).toFixed(1)}K`;
+    const n = Number(sats);
+    if (n >= 1000000) {
+      return `${(n / 1000000).toFixed(1)}M`;
+    } else if (n >= 1000) {
+      return `${(n / 1000).toFixed(1)}K`;
     }
-    return sats.toLocaleString();
+    return n !== undefined && n !== null ? n.toLocaleString() : 'N/A';
   };
 
   if (loading) {

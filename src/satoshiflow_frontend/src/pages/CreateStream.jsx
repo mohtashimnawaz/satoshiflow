@@ -233,7 +233,7 @@ const CreateStream = () => {
                 value={formData.totalLocked}
                 onChange={handleInputChange}
                 className="input-field"
-                placeholder={`Auto-calculated: ${totalLocked.toLocaleString()}`}
+                placeholder={`Auto-calculated: ${totalLocked !== undefined && totalLocked !== null ? Number(totalLocked).toLocaleString() : '--'}`}
                 min="1"
               />
               <p className="text-sm text-gray-500 mt-1">
@@ -330,13 +330,13 @@ const CreateStream = () => {
               <div className="flex justify-between">
                 <span className="text-gray-500">Total:</span>
                 <span className="font-medium">
-                  {totalLocked ? `${totalLocked.toLocaleString()} sats` : '--'}
+                  {totalLocked !== undefined && totalLocked !== null ? `${Number(totalLocked).toLocaleString()} sats` : '--'}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Per minute:</span>
                 <span className="font-medium">
-                  {formData.satsPerSec ? `${(formData.satsPerSec * 60).toLocaleString()} sats` : '--'}
+                  {formData.satsPerSec !== undefined && formData.satsPerSec !== null ? `${(Number(formData.satsPerSec) * 60).toLocaleString()} sats` : '--'}
                 </span>
               </div>
             </div>
