@@ -11,12 +11,29 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
+// Utility: Deeply convert all BigInt fields to Number
+function deepBigIntToNumber(obj) {
+  if (typeof obj === 'bigint') return Number(obj);
+  if (Array.isArray(obj)) return obj.map(deepBigIntToNumber);
+  if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const k in obj) {
+      out[k] = deepBigIntToNumber(obj[k]);
+    }
+    return out;
+  }
+  return obj;
+}
+
 const StreamCard = ({ stream, currentUser }) => {
-  const isOutgoing = stream.sender.toString() === currentUser?.toString();
-  const progress = Number(stream.total_locked) > 0 ? (Number(stream.total_released) / Number(stream.total_locked)) * 100 : 0;
+  // Defensive: convert all BigInt fields to Number
+  const safeStream = deepBigIntToNumber(stream);
+  const isOutgoing = safeStream.sender && safeStream.sender.toString() === currentUser?.toString();
+  const progress = safeStream.total_locked > 0 ? (safeStream.total_released / safeStream.total_locked) * 100 : 0;
 
   const getStatusIcon = (status) => {
-    switch (status) {
+    const s = typeof status === 'string' ? status : (Array.isArray(status) ? status[0] : JSON.stringify(status));
+    switch (s) {
       case 'Active':
         return <Play className="h-4 w-4 text-green-500" />;
       case 'Paused':
@@ -31,7 +48,8 @@ const StreamCard = ({ stream, currentUser }) => {
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
+    const s = typeof status === 'string' ? status : (Array.isArray(status) ? status[0] : JSON.stringify(status));
+    switch (s) {
       case 'Active':
         return 'bg-green-50 text-green-700 border-green-200';
       case 'Paused':
@@ -49,12 +67,12 @@ const StreamCard = ({ stream, currentUser }) => {
     return new Intl.NumberFormat().format(Number(sats));
   };
 
-  const otherParty = isOutgoing ? stream.recipient : stream.sender;
-  const otherPartyDisplay = otherParty.toString().slice(0, 8) + '...';
+  const otherParty = isOutgoing ? safeStream.recipient : safeStream.sender;
+  const otherPartyDisplay = otherParty && otherParty.toString ? otherParty.toString().slice(0, 8) + '...' : 'N/A';
 
   return (
     <Link
-      to={`/streams/${stream.id}`}
+      to={`/streams/${safeStream.id}`}
       className="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
     >
       <div className="flex items-center justify-between">
@@ -74,16 +92,16 @@ const StreamCard = ({ stream, currentUser }) => {
               <span className="font-medium text-gray-900">
                 {isOutgoing ? 'To' : 'From'}: {otherPartyDisplay}
               </span>
-              {stream.title && (
-                <span className="text-sm text-gray-500">• {stream.title}</span>
+              {safeStream.title && (
+                <span className="text-sm text-gray-500">• {safeStream.title}</span>
               )}
             </div>
             <div className="flex items-center space-x-4 mt-1">
               <span className="text-sm text-gray-500">
-                {formatSats(stream.sats_per_sec)} sats/sec
+                {formatSats(safeStream.sats_per_sec)} sats/sec
               </span>
               <span className="text-sm text-gray-500">
-                {formatDistanceToNow(new Date(stream.start_time * 1000), { addSuffix: true })}
+                {safeStream.start_time ? formatDistanceToNow(new Date(safeStream.start_time * 1000), { addSuffix: true }) : 'N/A'}
               </span>
             </div>
           </div>
@@ -92,7 +110,7 @@ const StreamCard = ({ stream, currentUser }) => {
         <div className="flex items-center space-x-4">
           <div className="text-right">
             <div className="text-sm font-medium text-gray-900">
-              {stream.total_released !== undefined && stream.total_released !== null ? formatSats(Number(stream.total_released)) : 'N/A'} / {stream.total_locked !== undefined && stream.total_locked !== null ? formatSats(Number(stream.total_locked)) : 'N/A'} sats
+              {safeStream.total_released !== undefined && safeStream.total_released !== null ? formatSats(Number(safeStream.total_released)) : 'N/A'} / {safeStream.total_locked !== undefined && safeStream.total_locked !== null ? formatSats(Number(safeStream.total_locked)) : 'N/A'} sats
             </div>
             <div className="flex items-center space-x-2 mt-1">
               <div className="w-20 bg-gray-200 rounded-full h-2">
@@ -107,24 +125,24 @@ const StreamCard = ({ stream, currentUser }) => {
             </div>
           </div>
 
-          <div className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(stream.status)}`}>
+          <div className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(safeStream.status)}`}>
             <div className="flex items-center space-x-1">
-              {getStatusIcon(stream.status)}
-              <span>{stream.status}</span>
+              {getStatusIcon(safeStream.status)}
+              <span>{typeof safeStream.status === 'string' ? safeStream.status : (Array.isArray(safeStream.status) ? safeStream.status[0] : JSON.stringify(safeStream.status))}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {stream.description && (
+      {safeStream.description && (
         <div className="mt-3 pt-3 border-t border-gray-100">
-          <p className="text-sm text-gray-600 truncate">{stream.description}</p>
+          <p className="text-sm text-gray-600 truncate">{safeStream.description}</p>
         </div>
       )}
 
-      {stream.tags && stream.tags.length > 0 && (
+      {safeStream.tags && safeStream.tags.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
-          {stream.tags.slice(0, 3).map((tag, index) => (
+          {safeStream.tags.slice(0, 3).map((tag, index) => (
             <span
               key={index}
               className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full"
@@ -132,9 +150,9 @@ const StreamCard = ({ stream, currentUser }) => {
               {tag}
             </span>
           ))}
-          {stream.tags.length > 3 && (
+          {safeStream.tags.length > 3 && (
             <span className="inline-block text-gray-500 text-xs px-2 py-1">
-              +{stream.tags.length - 3} more
+              +{safeStream.tags.length - 3} more
             </span>
           )}
         </div>

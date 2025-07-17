@@ -101,6 +101,10 @@ const CreateStream = () => {
 
       // Create stream
       let streamId;
+      const tagsArray = formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+      const safeTitle = formData.title && formData.title.trim() ? formData.title.trim() : null;
+      const safeDescription = formData.description && formData.description.trim() ? formData.description.trim() : null;
+      console.log('create_stream args:', recipientPrincipal, satsPerSec, durationSecs, totalLocked, safeTitle, safeDescription, tagsArray);
       if (selectedTemplate) {
         streamId = await satoshiflow_backend.create_stream_from_template(
           selectedTemplate.id,
@@ -112,7 +116,10 @@ const CreateStream = () => {
           recipientPrincipal,
           satsPerSec,
           durationSecs,
-          totalLocked
+          totalLocked,
+          safeTitle ? [safeTitle] : [],
+          safeDescription ? [safeDescription] : [],
+          tagsArray
         );
       }
 

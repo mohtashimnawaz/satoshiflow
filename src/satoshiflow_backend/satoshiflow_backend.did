@@ -102,7 +102,7 @@ type StreamFilter = record {
 service : {
     // Basic stream operations
     "greet": (text) -> (text) query;
-    "create_stream": (principal, nat64, nat64, nat64) -> (nat64);
+    "create_stream": (principal, nat64, nat64, nat64, opt text, opt text, vec text) -> (nat64);
     "claim_stream": (nat64) -> (variant { ok: nat64; err: text });
     "top_up_stream": (nat64, nat64) -> (variant { ok: null; err: text });
     "cancel_stream": (nat64) -> (variant { ok: record { refund: nat64; fee: nat64 }; err: text });

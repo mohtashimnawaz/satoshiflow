@@ -181,6 +181,9 @@ fn create_stream(
     sats_per_sec: u64,
     duration_secs: u64,
     total_locked: u64,
+    title: Option<String>,
+    description: Option<String>,
+    tags: Vec<String>,
 ) -> u64 {
     let sender = caller();
     let start_time = ic_cdk::api::time() / 1_000_000_000; // seconds
@@ -204,9 +207,9 @@ fn create_stream(
         buffer: 0,
         status: StreamStatus::Active,
         last_claim_time: start_time,
-        title: None,
-        description: None,
-        tags: Vec::new(),
+        title,
+        description,
+        tags,
         metadata: HashMap::new(),
     };
     STREAMS.with(|streams| {
@@ -689,7 +692,7 @@ fn create_stream_from_template(template_id: u64, recipient: Principal, total_loc
         let mut templates = templates.borrow_mut();
         if let Some(template) = templates.get_mut(&template_id) {
             template.usage_count += 1;
-            create_stream(recipient, template.sats_per_sec, template.duration_secs, total_locked)
+            create_stream(recipient, template.sats_per_sec, template.duration_secs, total_locked, None, None, Vec::new())
         } else {
             0 // Handle error properly in real implementation
         }

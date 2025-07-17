@@ -14,6 +14,20 @@ import { useAuth } from '../contexts/AuthContext';
 import StreamCard from '../components/StreamCard';
 import { Link } from 'react-router-dom';
 
+// Utility: Deeply convert all BigInt fields to Number
+function deepBigIntToNumber(obj) {
+  if (typeof obj === 'bigint') return Number(obj);
+  if (Array.isArray(obj)) return obj.map(deepBigIntToNumber);
+  if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const k in obj) {
+      out[k] = deepBigIntToNumber(obj[k]);
+    }
+    return out;
+  }
+  return obj;
+}
+
 const StreamList = () => {
   const [streams, setStreams] = useState([]);
   const [filteredStreams, setFilteredStreams] = useState([]);
@@ -38,8 +52,9 @@ const StreamList = () => {
     try {
       setLoading(true);
       const userStreams = await satoshiflow_backend.list_streams_for_user(user);
-      
-      setStreams(userStreams);
+      // Deep convert BigInt fields to Number
+      const safeStreams = Array.isArray(userStreams) ? userStreams.map(deepBigIntToNumber) : [];
+      setStreams(safeStreams);
     } catch (error) {
       console.error('Failed to fetch streams:', error);
     } finally {
@@ -53,27 +68,28 @@ const StreamList = () => {
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(stream => 
-        stream.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        stream.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        stream.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        stream.sender.toString().includes(searchTerm) ||
-        stream.recipient.toString().includes(searchTerm)
+        (stream.title && stream.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (stream.description && stream.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (Array.isArray(stream.tags) && stream.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))) ||
+        (stream.sender && stream.sender.toString().includes(searchTerm)) ||
+        (stream.recipient && stream.recipient.toString().includes(searchTerm))
       );
     }
 
     // Status filter
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(stream => 
-        stream.status.toLowerCase() === statusFilter.toLowerCase()
-      );
+      filtered = filtered.filter(stream => {
+        const status = typeof stream.status === 'string' ? stream.status : (Array.isArray(stream.status) ? stream.status[0] : JSON.stringify(stream.status));
+        return status && status.toLowerCase() === statusFilter.toLowerCase();
+      });
     }
 
     // Type filter
     if (typeFilter !== 'all') {
       if (typeFilter === 'outgoing') {
-        filtered = filtered.filter(stream => stream.sender.toString() === user?.toString());
+        filtered = filtered.filter(stream => stream.sender && stream.sender.toString() === user?.toString());
       } else if (typeFilter === 'incoming') {
-        filtered = filtered.filter(stream => stream.recipient.toString() === user?.toString());
+        filtered = filtered.filter(stream => stream.recipient && stream.recipient.toString() === user?.toString());
       }
     }
 
@@ -81,17 +97,17 @@ const StreamList = () => {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'newest':
-          return b.start_time - a.start_time;
+          return Number(b.start_time) - Number(a.start_time);
         case 'oldest':
-          return a.start_time - b.start_time;
+          return Number(a.start_time) - Number(b.start_time);
         case 'amount_high':
-          return b.total_locked - a.total_locked;
+          return Number(b.total_locked) - Number(a.total_locked);
         case 'amount_low':
-          return a.total_locked - b.total_locked;
+          return Number(a.total_locked) - Number(b.total_locked);
         case 'rate_high':
-          return b.sats_per_sec - a.sats_per_sec;
+          return Number(b.sats_per_sec) - Number(a.sats_per_sec);
         case 'rate_low':
-          return a.sats_per_sec - b.sats_per_sec;
+          return Number(a.sats_per_sec) - Number(b.sats_per_sec);
         default:
           return 0;
       }
