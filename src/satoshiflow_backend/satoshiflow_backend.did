@@ -134,3 +134,4 @@ service : {
     // Search and filtering
     "search_streams": (StreamFilter) -> (vec Stream) query;
 };
+

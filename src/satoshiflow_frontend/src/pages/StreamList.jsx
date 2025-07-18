@@ -65,6 +65,12 @@ const StreamList = () => {
   }, [user]);
 
   useEffect(() => {
+    if (user) {
+      fetchStreams();
+    }
+  }, [user]);
+
+  useEffect(() => {
     filterAndSortStreams();
   }, [streams, searchTerm, statusFilter, typeFilter, sortBy]);
 
@@ -76,6 +82,13 @@ const StreamList = () => {
       const userStreams = await satoshiflow_backend.list_streams_for_user(user);
       // Deep convert BigInt fields to Number
       const safeStreams = Array.isArray(userStreams) ? userStreams.map(deepBigIntToNumber) : [];
+      console.log('All streams (raw):', userStreams);
+      console.log('All streams (after deepBigIntToNumber):', safeStreams);
+      if (safeStreams.length > 0) {
+        const s = safeStreams[0];
+        console.log('First stream sender:', s.sender, typeof s.sender);
+        console.log('First stream recipient:', s.recipient, typeof s.recipient);
+      }
       setStreams(safeStreams);
       console.log('All streams:', safeStreams);
     } catch (error) {
@@ -110,18 +123,47 @@ const StreamList = () => {
         } else if (typeof status === 'object' && status !== null) {
           status = Object.keys(status)[0];
         }
-        return status && status.toLowerCase() === statusFilter.toLowerCase();
+        console.log('Status value and type:', status, typeof status);
+        if (typeof status === 'string') {
+          return status.toLowerCase() === statusFilter.toLowerCase();
+        }
+        // If status is not a string, skip this stream for the filter
+        return false;
       });
     }
 
-    // Type filter
+    // Type filter (updated for array-wrapped sender/recipient)
+    const userText = principalToText(user);
     if (typeFilter !== 'all') {
       if (typeFilter === 'outgoing') {
-        filtered = filtered.filter(stream => principalToText(stream.sender) === principalToText(user));
+        filtered = filtered.filter(stream => {
+          const sender = Array.isArray(stream.sender) ? stream.sender[0] : stream.sender;
+          const match = principalToText(sender) === userText;
+          console.log('Outgoing filter:', principalToText(sender), userText, match);
+          return match;
+        });
       } else if (typeFilter === 'incoming') {
-        filtered = filtered.filter(stream => principalToText(stream.recipient) === principalToText(user));
+        filtered = filtered.filter(stream => {
+          const recipient = Array.isArray(stream.recipient) ? stream.recipient[0] : stream.recipient;
+          const match = principalToText(recipient) === userText;
+          console.log('Incoming filter:', principalToText(recipient), userText, match);
+          return match;
+        });
       }
     }
+
+    // Also update the main filter for user streams (not just type filter)
+    filtered = filtered.filter(stream => {
+      const sender = stream.sender;
+      const recipient = stream.recipient;
+      const senderText = sender && typeof sender.toText === 'function' ? sender.toText() : String(sender);
+      const recipientText = recipient && typeof recipient.toText === 'function' ? recipient.toText() : String(recipient);
+      const userText = user && typeof user.toText === 'function' ? user.toText() : String(user);
+      const senderMatch = senderText === userText;
+      const recipientMatch = recipientText === userText;
+      console.log('User stream filter:', { senderText, recipientText, userText, senderMatch, recipientMatch });
+      return senderMatch || recipientMatch;
+    });
 
     // Sort
     filtered.sort((a, b) => {
