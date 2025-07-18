@@ -37,6 +37,21 @@ function principalToText(p) {
   return String(p);
 }
 
+// Utility to robustly extract status as string
+function extractStatus(statusRaw) {
+  let status = '';
+  if (typeof statusRaw === 'string') {
+    status = statusRaw;
+  } else if (Array.isArray(statusRaw)) {
+    status = statusRaw[0] || '';
+  } else if (typeof statusRaw === 'object' && statusRaw !== null) {
+    status = Object.keys(statusRaw)[0] || '';
+  } else if (statusRaw !== undefined && statusRaw !== null) {
+    status = String(statusRaw);
+  }
+  return status;
+}
+
 const StreamList = () => {
   const [streams, setStreams] = useState([]);
   const [filteredStreams, setFilteredStreams] = useState([]);
@@ -112,22 +127,13 @@ const StreamList = () => {
       );
     }
 
-    // Status filter
+    // Status filter (use extractStatus)
     if (statusFilter !== 'all') {
       filtered = filtered.filter(stream => {
-        let status = stream.status;
-        if (typeof status === 'string') {
-          // ok
-        } else if (Array.isArray(status)) {
-          status = status[0];
-        } else if (typeof status === 'object' && status !== null) {
-          status = Object.keys(status)[0];
-        }
-        console.log('Status value and type:', status, typeof status);
-        if (typeof status === 'string') {
+        const status = extractStatus(stream.status);
+        if (typeof status === 'string' && status.length > 0) {
           return status.toLowerCase() === statusFilter.toLowerCase();
         }
-        // If status is not a string, skip this stream for the filter
         return false;
       });
     }
@@ -190,9 +196,10 @@ const StreamList = () => {
   };
 
   const getStatusCount = (status) => {
-    return streams.filter(stream => 
-      status === 'all' ? true : stream.status.toLowerCase() === status.toLowerCase()
-    ).length;
+    return streams.filter(stream => {
+      const statusStr = extractStatus(stream.status);
+      return status === 'all' ? true : (typeof statusStr === 'string' && statusStr.length > 0 && statusStr.toLowerCase() === status.toLowerCase());
+    }).length;
   };
 
   const getTypeCount = (type) => {
