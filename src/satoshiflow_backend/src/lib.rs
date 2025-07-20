@@ -185,7 +185,11 @@ fn create_stream(
     description: Option<String>,
     tags: Vec<String>,
 ) -> u64 {
+    // Always use the authenticated caller as sender
     let sender = caller();
+    if sender == Principal::anonymous() {
+        ic_cdk::println!("WARNING: create_stream called by anonymous principal! This stream will not be associated with a user.");
+    }
     let start_time = ic_cdk::api::time() / 1_000_000_000; // seconds
     let end_time = start_time + duration_secs;
     let id = NEXT_ID.with(|id| {

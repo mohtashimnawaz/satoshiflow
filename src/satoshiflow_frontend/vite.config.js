@@ -21,6 +21,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      // Proxy API calls to the backend canister for local development
+      // Make sure to use /api as the prefix for backend calls in your frontend code
       "/api": {
         target: "http://127.0.0.1:4943",
         changeOrigin: true,

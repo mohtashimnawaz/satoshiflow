@@ -10,6 +10,7 @@ import {
   User
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { Principal } from '@dfinity/principal';
 
 // Utility: Deeply convert all BigInt fields to Number
 function deepBigIntToNumber(obj) {
@@ -29,6 +30,15 @@ function principalToText(p) {
   if (!p) return '';
   if (typeof p === 'string') return p;
   if (typeof p.toText === 'function') return p.toText();
+  try {
+    // If it's a plain object with _arr, reconstruct as Principal
+    if (p._arr) {
+      const arr = Array.isArray(p._arr) ? p._arr : Array.from(p._arr);
+      return Principal.fromUint8Array(Uint8Array.from(arr)).toText();
+    }
+  } catch (e) {
+    console.error('Failed to convert principal:', p, e);
+  }
   if (typeof p.toString === 'function') return p.toString();
   return String(p);
 }

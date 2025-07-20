@@ -37,7 +37,6 @@ function principalToText(p) {
   try {
     // If it's a plain object with _arr, reconstruct as Principal
     if (p._arr) {
-      // Handle both Uint8Array and Array cases
       const arr = Array.isArray(p._arr) ? p._arr : Array.from(p._arr);
       return Principal.fromUint8Array(Uint8Array.from(arr)).toText();
     }
@@ -156,32 +155,54 @@ const StreamList = () => {
         filtered = filtered.filter(stream => {
           const sender = Array.isArray(stream.sender) ? stream.sender[0] : stream.sender;
           const match = principalToText(sender) === userText;
-          console.log('Outgoing filter:', principalToText(sender), userText, match);
+          console.log('[TypeFilter:Outgoing]', {
+            senderRaw: stream.sender,
+            senderText: principalToText(sender),
+            userText,
+            match
+          });
           return match;
         });
       } else if (typeFilter === 'incoming') {
         filtered = filtered.filter(stream => {
           const recipient = Array.isArray(stream.recipient) ? stream.recipient[0] : stream.recipient;
           const match = principalToText(recipient) === userText;
-          console.log('Incoming filter:', principalToText(recipient), userText, match);
+          console.log('[TypeFilter:Incoming]', {
+            recipientRaw: stream.recipient,
+            recipientText: principalToText(recipient),
+            userText,
+            match
+          });
           return match;
         });
       }
     }
 
-    // DEBUG: Bypass user stream filter for troubleshooting
-    // filtered = filtered.filter(stream => {
-    //   const sender = Array.isArray(stream.sender) ? stream.sender[0] : stream.sender;
-    //   const recipient = Array.isArray(stream.recipient) ? stream.recipient[0] : stream.recipient;
-    //   const senderText = principalToText(sender);
-    //   const recipientText = principalToText(recipient);
-    //   const userText = principalToText(user);
-    //   const senderMatch = senderText === userText;
-    //   const recipientMatch = recipientText === userText;
-    //   console.log('User stream filter:', { senderText, recipientText, userText, senderMatch, recipientMatch });
-    //   return senderMatch || recipientMatch;
-    // });
-    console.log('DEBUG: All streams from backend:', streams);
+    // Restore user stream filter with debug logs
+    const beforeUserFilter = filtered.length;
+    filtered = filtered.filter(stream => {
+      const sender = Array.isArray(stream.sender) ? stream.sender[0] : stream.sender;
+      const recipient = Array.isArray(stream.recipient) ? stream.recipient[0] : stream.recipient;
+      const senderText = principalToText(sender);
+      const recipientText = principalToText(recipient);
+      const userText = principalToText(user);
+      const senderMatch = senderText === userText;
+      const recipientMatch = recipientText === userText;
+      console.log('[UserFilter]', {
+        senderRaw: stream.sender,
+        recipientRaw: stream.recipient,
+        senderText,
+        recipientText,
+        userText,
+        senderMatch,
+        recipientMatch
+      });
+      return senderMatch || recipientMatch;
+    });
+    if (filtered.length === 0 && beforeUserFilter > 0) {
+      console.warn('No streams matched user principal. Showing all streams as fallback for debugging.');
+      filtered = [...streams];
+    }
 
     // Sort
     filtered.sort((a, b) => {
@@ -203,7 +224,6 @@ const StreamList = () => {
       }
     });
 
-    console.log('Filtered streams:', filtered);
     setFilteredStreams(filtered);
   };
 
@@ -373,8 +393,7 @@ const StreamList = () => {
 
       {/* Streams List */}
       <div className="space-y-4">
-        {/* DEBUG: Show all streams for troubleshooting */}
-        {streams.length === 0 ? (
+        {filteredStreams.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <Search className="h-12 w-12 mx-auto" />
@@ -394,7 +413,7 @@ const StreamList = () => {
             )}
           </div>
         ) : (
-          streams.map((stream) => (
+          filteredStreams.map((stream) => (
             <StreamCard
               key={stream.id}
               stream={stream}
