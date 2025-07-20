@@ -13,6 +13,7 @@ import {
 import { Principal } from '@dfinity/principal';
 import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import { useAuth } from '../contexts/AuthContext';
+import { getBackendActor } from '../utils/getBackendActor';
 
 const CreateStream = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const CreateStream = () => {
   const [success, setSuccess] = useState(false);
   
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, walletType } = useAuth();
 
   useEffect(() => {
     fetchTemplates();
@@ -111,6 +112,20 @@ const CreateStream = () => {
         throw new Error('Values must be positive numbers');
       }
 
+      // Get the authenticated identity
+      let identity = null;
+      if (walletType === 'plug' && window.ic?.plug) {
+        await window.ic.plug.createAgent();
+        identity = window.ic.plug.agent.identity;
+      } else if (walletType === 'ii') {
+        const { AuthClient } = await import('@dfinity/auth-client');
+        const authClient = await AuthClient.create();
+        identity = authClient.getIdentity();
+      }
+      console.log('Using identity:', identity);
+      const backend = getBackendActor(identity);
+      console.log('Backend actor:', backend);
+
       // Create stream
       let streamId;
       const tagsArray = formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
@@ -118,13 +133,13 @@ const CreateStream = () => {
       const safeDescription = formData.description && formData.description.trim() ? formData.description.trim() : null;
       console.log('create_stream args:', recipientPrincipal, satsPerSec, durationSecs, totalLocked, safeTitle, safeDescription, tagsArray);
       if (selectedTemplate) {
-        streamId = await satoshiflow_backend.create_stream_from_template(
+        streamId = await backend.create_stream_from_template(
           selectedTemplate.id,
           recipientPrincipal,
           totalLocked
         );
       } else {
-        streamId = await satoshiflow_backend.create_stream(
+        streamId = await backend.create_stream(
           recipientPrincipal,
           satsPerSec,
           durationSecs,

@@ -212,6 +212,7 @@ fn create_stream(
         tags,
         metadata: HashMap::new(),
     };
+    ic_cdk::println!("Created stream: id={}, sender={:?}, recipient={:?}", id, sender, recipient);
     STREAMS.with(|streams| {
         streams.borrow_mut().insert(id, stream);
     });

@@ -13,6 +13,7 @@ import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import { useAuth } from '../contexts/AuthContext';
 import StreamCard from '../components/StreamCard';
 import { Link } from 'react-router-dom';
+import { Principal } from '@dfinity/principal';
 
 // Utility: Deeply convert all BigInt fields to Number
 function deepBigIntToNumber(obj) {
@@ -33,6 +34,16 @@ function principalToText(p) {
   if (!p) return '';
   if (typeof p === 'string') return p;
   if (typeof p.toText === 'function') return p.toText();
+  try {
+    // If it's a plain object with _arr, reconstruct as Principal
+    if (p._arr) {
+      // Handle both Uint8Array and Array cases
+      const arr = Array.isArray(p._arr) ? p._arr : Array.from(p._arr);
+      return Principal.fromUint8Array(Uint8Array.from(arr)).toText();
+    }
+  } catch (e) {
+    console.error('Failed to convert principal:', p, e);
+  }
   if (typeof p.toString === 'function') return p.toString();
   return String(p);
 }
@@ -158,18 +169,19 @@ const StreamList = () => {
       }
     }
 
-    // Also update the main filter for user streams (not just type filter)
-    filtered = filtered.filter(stream => {
-      const sender = stream.sender;
-      const recipient = stream.recipient;
-      const senderText = sender && typeof sender.toText === 'function' ? sender.toText() : String(sender);
-      const recipientText = recipient && typeof recipient.toText === 'function' ? recipient.toText() : String(recipient);
-      const userText = user && typeof user.toText === 'function' ? user.toText() : String(user);
-      const senderMatch = senderText === userText;
-      const recipientMatch = recipientText === userText;
-      console.log('User stream filter:', { senderText, recipientText, userText, senderMatch, recipientMatch });
-      return senderMatch || recipientMatch;
-    });
+    // DEBUG: Bypass user stream filter for troubleshooting
+    // filtered = filtered.filter(stream => {
+    //   const sender = Array.isArray(stream.sender) ? stream.sender[0] : stream.sender;
+    //   const recipient = Array.isArray(stream.recipient) ? stream.recipient[0] : stream.recipient;
+    //   const senderText = principalToText(sender);
+    //   const recipientText = principalToText(recipient);
+    //   const userText = principalToText(user);
+    //   const senderMatch = senderText === userText;
+    //   const recipientMatch = recipientText === userText;
+    //   console.log('User stream filter:', { senderText, recipientText, userText, senderMatch, recipientMatch });
+    //   return senderMatch || recipientMatch;
+    // });
+    console.log('DEBUG: All streams from backend:', streams);
 
     // Sort
     filtered.sort((a, b) => {
@@ -361,7 +373,8 @@ const StreamList = () => {
 
       {/* Streams List */}
       <div className="space-y-4">
-        {filteredStreams.length === 0 ? (
+        {/* DEBUG: Show all streams for troubleshooting */}
+        {streams.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <Search className="h-12 w-12 mx-auto" />
@@ -381,7 +394,7 @@ const StreamList = () => {
             )}
           </div>
         ) : (
-          filteredStreams.map((stream) => (
+          streams.map((stream) => (
             <StreamCard
               key={stream.id}
               stream={stream}

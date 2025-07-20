@@ -24,6 +24,20 @@ function principalToText(p) {
   return String(p);
 }
 
+// Utility: Deeply convert all BigInt fields to Number
+function deepBigIntToNumber(obj) {
+  if (typeof obj === 'bigint') return Number(obj);
+  if (Array.isArray(obj)) return obj.map(deepBigIntToNumber);
+  if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const k in obj) {
+      out[k] = deepBigIntToNumber(obj[k]);
+    }
+    return out;
+  }
+  return obj;
+}
+
 const Dashboard = () => {
   const [recentStreams, setRecentStreams] = useState([]);
   const [stats, setStats] = useState({
@@ -64,23 +78,23 @@ const Dashboard = () => {
       // Fetch recent streams with proper error handling
       const userStreams = await satoshiflow_backend.list_streams_for_user(user);
       
-      // Ensure userStreams is an array
-      const streamsArray = Array.isArray(userStreams) ? userStreams : [];
+      // Deep convert BigInt fields to Number
+      const safeStreams = Array.isArray(userStreams) ? userStreams.map(deepBigIntToNumber) : [];
       
       // Sort by creation time and take the 5 most recent
-      const sortedStreams = streamsArray.sort((a, b) => b.start_time - a.start_time);
+      const sortedStreams = safeStreams.sort((a, b) => b.start_time - a.start_time);
       setRecentStreams(sortedStreams.slice(0, 5));
       
       // Calculate stats
-      const sentStreams = streamsArray.filter(s => principalToText(s.sender) === user?.toText());
-      const receivedStreams = streamsArray.filter(s => principalToText(s.recipient) === user?.toText());
-      const activeStreams = streamsArray.filter(s => s.status === 'Active');
+      const sentStreams = safeStreams.filter(s => principalToText(s.sender) === user?.toText());
+      const receivedStreams = safeStreams.filter(s => principalToText(s.recipient) === user?.toText());
+      const activeStreams = safeStreams.filter(s => s.status === 'Active');
       
       setStats({
-        totalSent: sentStreams.reduce((sum, s) => sum + Number(s.total_locked || 0), 0),
-        totalReceived: receivedStreams.reduce((sum, s) => sum + Number(s.total_released || 0), 0),
+        totalSent: sentStreams.reduce((sum, s) => sum + (typeof s.total_locked === 'number' ? s.total_locked : 0), 0),
+        totalReceived: receivedStreams.reduce((sum, s) => sum + (typeof s.total_released === 'number' ? s.total_released : 0), 0),
         activeStreams: activeStreams.length,
-        totalStreams: streamsArray.length,
+        totalStreams: safeStreams.length,
       });
       
     } catch (error) {
