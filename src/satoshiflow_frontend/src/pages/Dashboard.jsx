@@ -141,90 +141,85 @@ const Dashboard = () => {
           <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
           <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
         </div>
-        {/* Floating 3D Bitcoin Icons */}
-        {[...Array(15)].map((_, i) => {
-          const size = 40 + Math.random() * 120;
-          const left = Math.random() * 100;
-          const top = Math.random() * 100;
-          const duration = 8 + Math.random() * 12;
-          const delay = Math.random() * 8;
-          const rotationSpeed = 20 + Math.random() * 40;
-          return (
-            <div
-              key={i}
-              style={{
-                position: 'absolute',
-                left: `${left}%`,
-                top: `${top}%`,
-                width: `${size}px`,
-                height: `${size}px`,
-                opacity: 0.12 + Math.random() * 0.25,
-                zIndex: 0,
-                animation: `float3D ${duration}s ease-in-out infinite, rotate3D ${rotationSpeed}s linear infinite`,
-                animationDelay: `${delay}s`,
-                filter: 'drop-shadow(0 0 40px rgba(255, 165, 0, 0.6))',
-                transform: `perspective(1000px) rotateX(${Math.random() * 60}deg) rotateY(${Math.random() * 60}deg)`,
-              }}
-            >
-              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                <defs>
-                  <radialGradient id={`bitcoin3d${i}`} cx="30%" cy="30%" r="70%">
-                    <stop offset="0%" stopColor="#FFD700" />
-                    <stop offset="40%" stopColor="#FFA500" />
-                    <stop offset="80%" stopColor="#FF8C00" />
-                    <stop offset="100%" stopColor="#FF6B00" />
-                  </radialGradient>
-                  <filter id={`shadow${i}`}>
-                    <feDropShadow dx="2" dy="4" stdDeviation="3" floodOpacity="0.3"/>
-                  </filter>
-                </defs>
-                <circle cx="32" cy="32" r="28" fill={`url(#bitcoin3d${i})`} stroke="#F7931A" strokeWidth="2" filter={`url(#shadow${i})`} />
-                <circle cx="32" cy="32" r="24" fill="none" stroke="#fff" strokeWidth="1" opacity="0.3" />
-                <text x="32" y="38" textAnchor="middle" fontSize="24" fontWeight="bold" fill="#fff" style={{fontFamily:'Arial, sans-serif'}}>₿</text>
-                <ellipse cx="32" cy="20" rx="20" ry="8" fill="#fff" opacity="0.15" />
-              </svg>
-            </div>
-          );
-        })}
+        {/* Floating 3D Bitcoin Icons - Static Positions */}
+        {[
+          { size: 80, left: 10, top: 20, delay: 0, duration: 12 },
+          { size: 60, left: 85, top: 15, delay: 2, duration: 15 },
+          { size: 100, left: 15, top: 70, delay: 4, duration: 10 },
+          { size: 70, left: 90, top: 80, delay: 1, duration: 14 },
+          { size: 50, left: 50, top: 10, delay: 3, duration: 16 },
+          { size: 90, left: 75, top: 50, delay: 5, duration: 11 },
+          { size: 65, left: 5, top: 45, delay: 1.5, duration: 13 },
+          { size: 55, left: 95, top: 35, delay: 3.5, duration: 17 },
+          { size: 75, left: 30, top: 85, delay: 2.5, duration: 9 },
+          { size: 85, left: 65, top: 25, delay: 4.5, duration: 12 },
+        ].map((bitcoin, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${bitcoin.left}%`,
+              top: `${bitcoin.top}%`,
+              width: `${bitcoin.size}px`,
+              height: `${bitcoin.size}px`,
+              opacity: 0.15,
+              zIndex: 0,
+              animationDelay: `${bitcoin.delay}s`,
+              animationDuration: `${bitcoin.duration}s`,
+            }}
+          >
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+              <defs>
+                <radialGradient id={`bitcoin3d${i}`} cx="30%" cy="30%" r="70%">
+                  <stop offset="0%" stopColor="#FFD700" />
+                  <stop offset="40%" stopColor="#FFA500" />
+                  <stop offset="80%" stopColor="#FF8C00" />
+                  <stop offset="100%" stopColor="#FF6B00" />
+                </radialGradient>
+              </defs>
+              <circle cx="32" cy="32" r="28" fill={`url(#bitcoin3d${i})`} stroke="#F7931A" strokeWidth="2" />
+              <circle cx="32" cy="32" r="24" fill="none" stroke="#fff" strokeWidth="1" opacity="0.3" />
+              <text x="32" y="38" textAnchor="middle" fontSize="24" fontWeight="bold" fill="#fff" style={{fontFamily:'Arial, sans-serif'}}>₿</text>
+              <ellipse cx="32" cy="20" rx="20" ry="8" fill="#fff" opacity="0.15" />
+            </svg>
+          </div>
+        ))}
         
-        {/* 3D Geometric Shapes */}
-        {[...Array(8)].map((_, i) => (
+        {/* Simple Geometric Shapes */}
+        {[
+          { left: 20, top: 30, size: 80, delay: 0 },
+          { left: 70, top: 60, size: 60, delay: 2 },
+          { left: 85, top: 20, size: 70, delay: 4 },
+          { left: 10, top: 80, size: 50, delay: 1 },
+          { left: 60, top: 15, size: 65, delay: 3 },
+        ].map((shape, i) => (
           <div
             key={`geo${i}`}
-            className="absolute"
+            className="absolute animate-pulse"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${60 + Math.random() * 80}px`,
-              height: `${60 + Math.random() * 80}px`,
+              left: `${shape.left}%`,
+              top: `${shape.top}%`,
+              width: `${shape.size}px`,
+              height: `${shape.size}px`,
               background: `linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(255, 215, 0, 0.05))`,
               borderRadius: i % 2 === 0 ? '50%' : '20%',
               border: '1px solid rgba(255, 165, 0, 0.2)',
               backdropFilter: 'blur(10px)',
-              animation: `geometricFloat ${12 + Math.random() * 8}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 5}s`,
-              transform: `perspective(1000px) rotateX(${Math.random() * 45}deg) rotateY(${Math.random() * 45}deg)`,
+              animationDelay: `${shape.delay}s`,
+              animationDuration: '3s',
             }}
           />
         ))}
         
         {/* Enhanced Keyframes */}
         <style>{`
-          @keyframes float3D {
-            0% { transform: perspective(1000px) translateY(0px) translateX(0px) rotateX(0deg) rotateY(0deg) scale(1); }
-            25% { transform: perspective(1000px) translateY(-20px) translateX(10px) rotateX(15deg) rotateY(15deg) scale(1.05); }
-            50% { transform: perspective(1000px) translateY(-40px) translateX(-10px) rotateX(30deg) rotateY(30deg) scale(1.1); }
-            75% { transform: perspective(1000px) translateY(-20px) translateX(15px) rotateX(15deg) rotateY(15deg) scale(1.05); }
-            100% { transform: perspective(1000px) translateY(0px) translateX(0px) rotateX(0deg) rotateY(0deg) scale(1); }
+          @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
           }
-          @keyframes rotate3D {
-            0% { transform: perspective(1000px) rotateZ(0deg); }
-            100% { transform: perspective(1000px) rotateZ(360deg); }
-          }
-          @keyframes geometricFloat {
-            0% { transform: perspective(1000px) translateY(0px) rotateX(0deg) rotateY(0deg); opacity: 0.1; }
-            50% { transform: perspective(1000px) translateY(-30px) rotateX(180deg) rotateY(180deg); opacity: 0.2; }
-            100% { transform: perspective(1000px) translateY(0px) rotateX(360deg) rotateY(360deg); opacity: 0.1; }
+          .animate-float {
+            animation: float 8s ease-in-out infinite;
           }
           @keyframes blob {
             0% { transform: translate(0px, 0px) scale(1); }
@@ -245,112 +240,94 @@ const Dashboard = () => {
       </div>
 
       <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-6">
-        {/* 3D Header Section */}
-        <div className="text-center mb-8 transform-gpu perspective-1000">
-          <div className="relative inline-block transform hover:scale-105 transition-all duration-500 hover:rotateX-3 hover:rotateY-3" style={{transformStyle: 'preserve-3d'}}>
-            <h1 className="text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent drop-shadow-2xl mb-4 relative z-10">
-              SatoshiFlow Dashboard
-            </h1>
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 opacity-20 blur-xl transform translate-z-minus-10"></div>
-          </div>
-          <p className="text-slate-300 text-xl font-medium drop-shadow-md mb-6">Welcome back to your Bitcoin streaming platform</p>
-          <div className="relative inline-block transform hover:scale-110 transition-all duration-300" style={{transformStyle: 'preserve-3d'}}>
-            <Link
-              to="/create"
-              className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 via-yellow-400 to-orange-600 hover:from-orange-600 hover:via-yellow-500 hover:to-orange-700 text-white font-bold px-12 py-6 rounded-full shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 border-2 border-orange-300/30 backdrop-blur-xl text-xl relative overflow-hidden group"
-              style={{
-                boxShadow: '0 20px 40px rgba(255, 165, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-                transform: 'translateZ(20px)',
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-              <Plus size={32} className="group-hover:rotate-90 transition-transform duration-300 relative z-10" />
-              <span className="relative z-10">Create Stream</span>
-            </Link>
-          </div>
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent mb-4">
+            SatoshiFlow Dashboard
+          </h1>
+          <p className="text-slate-300 text-lg md:text-xl font-medium mb-6">Welcome back to your Bitcoin streaming platform</p>
+          <Link
+            to="/create"
+            className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Plus size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+            <span>Create Stream</span>
+          </Link>
         </div>
 
         {/* 3D Stats Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 perspective-1000">
-          <div className="transform hover:scale-105 hover:rotateY-5 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="transform hover:scale-105 transition-all duration-300">
             <StatCard
               title="Total Sent"
               value={`${formatSats(stats.totalSent)} sats`}
               icon={ArrowUpRight}
               color="text-red-400"
-              bgColor="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-900/30 border-2 border-red-400/30 shadow-2xl backdrop-blur-xl"
+              bgColor="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20"
             />
           </div>
-          <div className="transform hover:scale-105 hover:rotateY-5 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+          <div className="transform hover:scale-105 transition-all duration-300">
             <StatCard
               title="Total Received"
               value={`${formatSats(stats.totalReceived)} sats`}
               icon={ArrowDownRight}
               color="text-green-400"
-              bgColor="bg-gradient-to-br from-green-900/30 via-green-800/20 to-green-900/30 border-2 border-green-400/30 shadow-2xl backdrop-blur-xl"
+              bgColor="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20"
             />
           </div>
-          <div className="transform hover:scale-105 hover:rotateY-5 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+          <div className="transform hover:scale-105 transition-all duration-300">
             <StatCard
               title="Active Streams"
               value={stats.activeStreams.toString()}
               icon={Activity}
               color="text-blue-400"
-              bgColor="bg-gradient-to-br from-blue-900/30 via-blue-800/20 to-blue-900/30 border-2 border-blue-400/30 shadow-2xl backdrop-blur-xl"
+              bgColor="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20"
             />
           </div>
-          <div className="transform hover:scale-105 hover:rotateY-5 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+          <div className="transform hover:scale-105 transition-all duration-300">
             <StatCard
               title="Total Streams"
               value={stats.totalStreams.toString()}
               icon={Users}
               color="text-purple-400"
-              bgColor="bg-gradient-to-br from-purple-900/30 via-purple-800/20 to-purple-900/30 border-2 border-purple-400/30 shadow-2xl backdrop-blur-xl"
+              bgColor="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20"
             />
           </div>
         </div>
 
-        {/* 3D Recent Streams Section */}
-        <div className="relative mb-12 transform hover:scale-102 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
-          <div className="bg-white/5 backdrop-blur-2xl rounded-3xl shadow-2xl border-2 border-slate-200/20 p-8 relative overflow-hidden"
-               style={{
-                 boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                 transform: 'translateZ(10px)',
-               }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-yellow-500/5 pointer-events-none"></div>
-            <div className="flex items-center justify-between mb-8 relative z-10">
-              <h2 className="text-4xl font-bold text-slate-100 drop-shadow-lg">Recent Streams</h2>
+        {/* Recent Streams Section */}
+        <div className="mb-8">
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-3xl font-bold text-white">Recent Streams</h2>
               <Link
                 to="/streams"
-                className="text-orange-400 hover:text-orange-300 font-bold text-xl drop-shadow-md hover:scale-110 transition-all duration-300"
+                className="text-orange-400 hover:text-orange-300 font-semibold hover:scale-105 transition-all duration-300"
               >
                 View All
               </Link>
             </div>
             {recentStreams.length === 0 ? (
-              <div className="text-center py-16 relative z-10">
-                <div className="bg-slate-100/20 rounded-full p-8 w-36 h-36 mx-auto mb-8 shadow-2xl flex items-center justify-center transform hover:scale-110 hover:rotateY-12 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
-                  <Wallet className="w-20 h-20 text-slate-400" />
+              <div className="text-center py-12">
+                <div className="bg-white/10 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                  <Wallet className="w-12 h-12 text-slate-400" />
                 </div>
-                <h3 className="text-3xl font-semibold text-slate-100 mb-4">No streams yet</h3>
-                <p className="text-slate-400 mb-8 max-w-md mx-auto text-lg">
-                  Get started by creating your first Bitcoin stream and begin your decentralized finance journey.
+                <h3 className="text-xl font-semibold text-white mb-3">No streams yet</h3>
+                <p className="text-slate-400 mb-6 max-w-md mx-auto">
+                  Get started by creating your first Bitcoin stream.
                 </p>
-                <div className="relative inline-block transform hover:scale-110 transition-all duration-300">
-                  <Link
-                    to="/create"
-                    className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 via-yellow-400 to-orange-600 hover:from-orange-600 hover:via-yellow-500 hover:to-orange-700 text-white font-bold px-12 py-6 rounded-full shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 border-2 border-orange-300/30 backdrop-blur-xl text-xl relative overflow-hidden group"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                    <Plus size={32} className="relative z-10" />
-                    <span className="relative z-10">Create Your First Stream</span>
-                  </Link>
-                </div>
+                <Link
+                  to="/create"
+                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300"
+                >
+                  <Plus size={20} />
+                  <span>Create Your First Stream</span>
+                </Link>
               </div>
             ) : (
-              <div className="space-y-6 relative z-10">
+              <div className="space-y-4">
                 {recentStreams.map((stream, index) => (
-                  <div key={stream.id} className="transform hover:scale-102 hover:translateZ-5 transition-all duration-300" style={{transformStyle: 'preserve-3d'}}>
+                  <div key={stream.id} className="transform hover:scale-102 transition-all duration-300">
                     <StreamCard
                       stream={stream}
                       currentUser={user}
@@ -362,38 +339,32 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* 3D Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="transform hover:scale-105 transition-all duration-300">
-            <QuickActionCard
-              to="/create"
-              icon={Plus}
-              iconBg="bg-gradient-to-br from-orange-500 via-yellow-400 to-orange-600 shadow-lg"
-              title="Create Stream"
-              description="Start streaming Bitcoin payments"
-              ariaLabel="Create a new Bitcoin stream"
-            />
-          </div>
-          <div className="transform hover:scale-105 transition-all duration-300">
-            <QuickActionCard
-              to="/templates"
-              icon={Clock}
-              iconBg="bg-gradient-to-br from-blue-500 via-cyan-400 to-blue-600 shadow-lg"
-              title="Templates"
-              description="Use predefined stream templates"
-              ariaLabel="View stream templates"
-            />
-          </div>
-          <div className="transform hover:scale-105 transition-all duration-300">
-            <QuickActionCard
-              to="/analytics"
-              icon={TrendingUp}
-              iconBg="bg-gradient-to-br from-green-500 via-emerald-400 to-green-600 shadow-lg"
-              title="Analytics"
-              description="View detailed statistics"
-              ariaLabel="View analytics"
-            />
-          </div>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <QuickActionCard
+            to="/create"
+            icon={Plus}
+            iconBg="bg-gradient-to-br from-orange-500 to-orange-600"
+            title="Create Stream"
+            description="Start streaming Bitcoin payments"
+            ariaLabel="Create a new Bitcoin stream"
+          />
+          <QuickActionCard
+            to="/templates"
+            icon={Clock}
+            iconBg="bg-gradient-to-br from-blue-500 to-blue-600"
+            title="Templates"
+            description="Use predefined stream templates"
+            ariaLabel="View stream templates"
+          />
+          <QuickActionCard
+            to="/analytics"
+            icon={TrendingUp}
+            iconBg="bg-gradient-to-br from-green-500 to-green-600"
+            title="Analytics"
+            description="View detailed statistics"
+            ariaLabel="View analytics"
+          />
         </div>
       </div>
     </div>
