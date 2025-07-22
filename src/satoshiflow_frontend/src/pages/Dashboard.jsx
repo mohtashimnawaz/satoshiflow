@@ -224,64 +224,88 @@ const Dashboard = () => {
       </div>
 
       <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="flex flex-col items-center justify-center mb-12">
-          <h1 className="text-5xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent drop-shadow-2xl mb-2 text-center">
-            SatoshiFlow Dashboard
-          </h1>
-          <p className="text-slate-300 text-xl font-medium drop-shadow-md text-center mb-4">Welcome back to your Bitcoin streaming platform</p>
-          <Link
-            to="/create"
-            className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-yellow-400 hover:from-orange-600 hover:to-yellow-500 text-white font-bold px-10 py-5 rounded-3xl shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 transform hover:scale-110 border border-orange-300/30 backdrop-blur-xl text-xl"
-          >
-            <Plus size={28} className="group-hover:rotate-90 transition-transform duration-200" />
-            <span>Create Stream</span>
-          </Link>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          <StatCard
-            title="Total Sent"
-            value={`${formatSats(stats.totalSent)} sats`}
-            icon={ArrowUpRight}
-            color="text-red-500"
-            bgColor="bg-gradient-to-br from-[#2c2f3a] to-[#23283a] border border-red-200/30 shadow-2xl backdrop-blur-xl"
-          />
-          <StatCard
-            title="Total Received"
-            value={`${formatSats(stats.totalReceived)} sats`}
-            icon={ArrowDownRight}
-            color="text-green-500"
-            bgColor="bg-gradient-to-br from-[#2c3a2c] to-[#23283a] border border-green-200/30 shadow-2xl backdrop-blur-xl"
-          />
-          <StatCard
-            title="Active Streams"
-            value={stats.activeStreams.toString()}
-            icon={Activity}
-            color="text-blue-500"
-            bgColor="bg-gradient-to-br from-[#2c2c3a] to-[#23283a] border border-blue-200/30 shadow-2xl backdrop-blur-xl"
-          />
-          <StatCard
-            title="Total Streams"
-            value={stats.totalStreams.toString()}
-            icon={Users}
-            color="text-purple-500"
-            bgColor="bg-gradient-to-br from-[#3a2c3a] to-[#23283a] border border-purple-200/30 shadow-2xl backdrop-blur-xl"
-          />
-        </div>
-
-        {/* Recent Streams */}
-        <div className="bg-white/5 backdrop-blur-2xl rounded-3xl shadow-2xl border border-slate-200/20 p-8 mb-12">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-slate-100 drop-shadow-lg">Recent Streams</h2>
+        {/* 3D Header Section */}
+        <div className="text-center mb-8 transform-gpu perspective-1000">
+          <div className="relative inline-block transform hover:scale-105 transition-all duration-500 hover:rotateX-3 hover:rotateY-3" style={{transformStyle: 'preserve-3d'}}>
+            <h1 className="text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent drop-shadow-2xl mb-4 relative z-10">
+              SatoshiFlow Dashboard
+            </h1>
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 opacity-20 blur-xl transform translate-z-minus-10"></div>
+          </div>
+          <p className="text-slate-300 text-xl font-medium drop-shadow-md mb-6">Welcome back to your Bitcoin streaming platform</p>
+          <div className="relative inline-block transform hover:scale-110 transition-all duration-300" style={{transformStyle: 'preserve-3d'}}>
             <Link
-              to="/streams"
-              className="text-orange-400 hover:text-orange-500 font-bold text-lg drop-shadow-md"
+              to="/create"
+              className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 via-yellow-400 to-orange-600 hover:from-orange-600 hover:via-yellow-500 hover:to-orange-700 text-white font-bold px-12 py-6 rounded-full shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 border-2 border-orange-300/30 backdrop-blur-xl text-xl relative overflow-hidden group"
+              style={{
+                boxShadow: '0 20px 40px rgba(255, 165, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                transform: 'translateZ(20px)',
+              }}
             >
-              View All
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <Plus size={32} className="group-hover:rotate-90 transition-transform duration-300 relative z-10" />
+              <span className="relative z-10">Create Stream</span>
             </Link>
           </div>
+        </div>
+
+        {/* 3D Stats Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 perspective-1000">
+          <div className="transform hover:scale-105 hover:rotateY-5 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+            <StatCard
+              title="Total Sent"
+              value={`${formatSats(stats.totalSent)} sats`}
+              icon={ArrowUpRight}
+              color="text-red-400"
+              bgColor="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-900/30 border-2 border-red-400/30 shadow-2xl backdrop-blur-xl"
+            />
+          </div>
+          <div className="transform hover:scale-105 hover:rotateY-5 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+            <StatCard
+              title="Total Received"
+              value={`${formatSats(stats.totalReceived)} sats`}
+              icon={ArrowDownRight}
+              color="text-green-400"
+              bgColor="bg-gradient-to-br from-green-900/30 via-green-800/20 to-green-900/30 border-2 border-green-400/30 shadow-2xl backdrop-blur-xl"
+            />
+          </div>
+          <div className="transform hover:scale-105 hover:rotateY-5 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+            <StatCard
+              title="Active Streams"
+              value={stats.activeStreams.toString()}
+              icon={Activity}
+              color="text-blue-400"
+              bgColor="bg-gradient-to-br from-blue-900/30 via-blue-800/20 to-blue-900/30 border-2 border-blue-400/30 shadow-2xl backdrop-blur-xl"
+            />
+          </div>
+          <div className="transform hover:scale-105 hover:rotateY-5 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+            <StatCard
+              title="Total Streams"
+              value={stats.totalStreams.toString()}
+              icon={Users}
+              color="text-purple-400"
+              bgColor="bg-gradient-to-br from-purple-900/30 via-purple-800/20 to-purple-900/30 border-2 border-purple-400/30 shadow-2xl backdrop-blur-xl"
+            />
+          </div>
+        </div>
+
+        {/* 3D Recent Streams Section */}
+        <div className="relative mb-12 transform hover:scale-102 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+          <div className="bg-white/5 backdrop-blur-2xl rounded-3xl shadow-2xl border-2 border-slate-200/20 p-8 relative overflow-hidden"
+               style={{
+                 boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                 transform: 'translateZ(10px)',
+               }}>
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-yellow-500/5 pointer-events-none"></div>
+            <div className="flex items-center justify-between mb-8 relative z-10">
+              <h2 className="text-4xl font-bold text-slate-100 drop-shadow-lg">Recent Streams</h2>
+              <Link
+                to="/streams"
+                className="text-orange-400 hover:text-orange-300 font-bold text-xl drop-shadow-md hover:scale-110 transition-all duration-300"
+              >
+                View All
+              </Link>
+            </div>
           {recentStreams.length === 0 ? (
             <div className="text-center py-16">
               <div className="bg-slate-100/20 rounded-full p-8 w-32 h-32 mx-auto mb-8 shadow-lg flex items-center justify-center">
