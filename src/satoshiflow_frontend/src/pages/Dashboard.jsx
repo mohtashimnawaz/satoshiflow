@@ -132,15 +132,17 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#181c24] via-[#23283a] to-[#181c24] overflow-hidden">
-      {/* Animated 3D Bitcoin SVGs floating around */}
+    <div className="relative min-h-screen bg-gradient-to-br from-[#0f1114] via-[#1a1f2e] to-[#0f1114] overflow-hidden">
+      {/* Enhanced 3D Background Elements */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {[...Array(12)].map((_, i) => {
-          const size = 60 + Math.random() * 100;
-          const left = Math.random() * 90;
-          const top = Math.random() * 90;
-          const duration = 12 + Math.random() * 8;
-          const delay = Math.random() * 6;
+        {/* Floating 3D Bitcoin Icons */}
+        {[...Array(15)].map((_, i) => {
+          const size = 40 + Math.random() * 120;
+          const left = Math.random() * 100;
+          const top = Math.random() * 100;
+          const duration = 8 + Math.random() * 12;
+          const delay = Math.random() * 8;
+          const rotationSpeed = 20 + Math.random() * 40;
           return (
             <div
               key={i}
@@ -150,40 +152,78 @@ const Dashboard = () => {
                 top: `${top}%`,
                 width: `${size}px`,
                 height: `${size}px`,
-                opacity: 0.18 + Math.random() * 0.18,
+                opacity: 0.12 + Math.random() * 0.25,
                 zIndex: 0,
-                animation: `floatY ${duration}s ease-in-out infinite`,
+                animation: `float3D ${duration}s ease-in-out infinite, rotate3D ${rotationSpeed}s linear infinite`,
                 animationDelay: `${delay}s`,
-                filter: 'drop-shadow(0 0 30px orange)',
+                filter: 'drop-shadow(0 0 40px rgba(255, 165, 0, 0.6))',
+                transform: `perspective(1000px) rotateX(${Math.random() * 60}deg) rotateY(${Math.random() * 60}deg)`,
               }}
             >
-              {/* 3D Bitcoin SVG */}
               <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                 <defs>
-                  <radialGradient id={`bitcoin3d${i}`} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                  <radialGradient id={`bitcoin3d${i}`} cx="30%" cy="30%" r="70%">
                     <stop offset="0%" stopColor="#FFD700" />
-                    <stop offset="60%" stopColor="#FFA500" />
-                    <stop offset="100%" stopColor="#FF8C00" />
+                    <stop offset="40%" stopColor="#FFA500" />
+                    <stop offset="80%" stopColor="#FF8C00" />
+                    <stop offset="100%" stopColor="#FF6B00" />
                   </radialGradient>
+                  <filter id={`shadow${i}`}>
+                    <feDropShadow dx="2" dy="4" stdDeviation="3" floodOpacity="0.3"/>
+                  </filter>
                 </defs>
-                <circle cx="32" cy="32" r="30" fill={`url(#bitcoin3d${i})`} stroke="#F7931A" strokeWidth="3" />
-                <text x="32" y="40" textAnchor="middle" fontSize="32" fontWeight="bold" fill="#fff" filter="url(#shadow)" style={{fontFamily:'monospace'}}>₿</text>
-                <ellipse cx="32" cy="32" rx="28" ry="12" fill="#fff" opacity="0.08" />
+                <circle cx="32" cy="32" r="28" fill={`url(#bitcoin3d${i})`} stroke="#F7931A" strokeWidth="2" filter={`url(#shadow${i})`} />
+                <circle cx="32" cy="32" r="24" fill="none" stroke="#fff" strokeWidth="1" opacity="0.3" />
+                <text x="32" y="38" textAnchor="middle" fontSize="24" fontWeight="bold" fill="#fff" style={{fontFamily:'Arial, sans-serif'}}>₿</text>
+                <ellipse cx="32" cy="20" rx="20" ry="8" fill="#fff" opacity="0.15" />
               </svg>
             </div>
           );
         })}
-        {/* Keyframes for floating animation */}
+        
+        {/* 3D Geometric Shapes */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={`geo${i}`}
+            className="absolute"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${60 + Math.random() * 80}px`,
+              height: `${60 + Math.random() * 80}px`,
+              background: `linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(255, 215, 0, 0.05))`,
+              borderRadius: i % 2 === 0 ? '50%' : '20%',
+              border: '1px solid rgba(255, 165, 0, 0.2)',
+              backdropFilter: 'blur(10px)',
+              animation: `geometricFloat ${12 + Math.random() * 8}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 5}s`,
+              transform: `perspective(1000px) rotateX(${Math.random() * 45}deg) rotateY(${Math.random() * 45}deg)`,
+            }}
+          />
+        ))}
+        
+        {/* Enhanced Keyframes */}
         <style>{`
-          @keyframes floatY {
-            0% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-30px) scale(1.08); }
-            100% { transform: translateY(0px) scale(1); }
+          @keyframes float3D {
+            0% { transform: perspective(1000px) translateY(0px) translateX(0px) rotateX(0deg) rotateY(0deg) scale(1); }
+            25% { transform: perspective(1000px) translateY(-20px) translateX(10px) rotateX(15deg) rotateY(15deg) scale(1.05); }
+            50% { transform: perspective(1000px) translateY(-40px) translateX(-10px) rotateX(30deg) rotateY(30deg) scale(1.1); }
+            75% { transform: perspective(1000px) translateY(-20px) translateX(15px) rotateX(15deg) rotateY(15deg) scale(1.05); }
+            100% { transform: perspective(1000px) translateY(0px) translateX(0px) rotateX(0deg) rotateY(0deg) scale(1); }
+          }
+          @keyframes rotate3D {
+            0% { transform: perspective(1000px) rotateZ(0deg); }
+            100% { transform: perspective(1000px) rotateZ(360deg); }
+          }
+          @keyframes geometricFloat {
+            0% { transform: perspective(1000px) translateY(0px) rotateX(0deg) rotateY(0deg); opacity: 0.1; }
+            50% { transform: perspective(1000px) translateY(-30px) rotateX(180deg) rotateY(180deg); opacity: 0.2; }
+            100% { transform: perspective(1000px) translateY(0px) rotateX(360deg) rotateY(360deg); opacity: 0.1; }
           }
         `}</style>
       </div>
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 py-12">
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex flex-col items-center justify-center mb-12">
           <h1 className="text-5xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent drop-shadow-2xl mb-2 text-center">
