@@ -306,62 +306,74 @@ const Dashboard = () => {
                 View All
               </Link>
             </div>
-          {recentStreams.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="bg-slate-100/20 rounded-full p-8 w-32 h-32 mx-auto mb-8 shadow-lg flex items-center justify-center">
-                <Wallet className="w-16 h-16 text-slate-400" />
+            </div>
+            {recentStreams.length === 0 ? (
+              <div className="text-center py-16 relative z-10">
+                <div className="bg-slate-100/20 rounded-full p-8 w-36 h-36 mx-auto mb-8 shadow-2xl flex items-center justify-center transform hover:scale-110 hover:rotateY-12 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+                  <Wallet className="w-20 h-20 text-slate-400" />
+                </div>
+                <h3 className="text-3xl font-semibold text-slate-100 mb-4">No streams yet</h3>
+                <p className="text-slate-400 mb-8 max-w-md mx-auto text-lg">
+                  Get started by creating your first Bitcoin stream and begin your decentralized finance journey.
+                </p>
+                <div className="relative inline-block transform hover:scale-110 transition-all duration-300">
+                  <Link
+                    to="/create"
+                    className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 via-yellow-400 to-orange-600 hover:from-orange-600 hover:via-yellow-500 hover:to-orange-700 text-white font-bold px-12 py-6 rounded-full shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 border-2 border-orange-300/30 backdrop-blur-xl text-xl relative overflow-hidden group"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    <Plus size={32} className="relative z-10" />
+                    <span className="relative z-10">Create Your First Stream</span>
+                  </Link>
+                </div>
               </div>
-              <h3 className="text-2xl font-semibold text-slate-100 mb-4">No streams yet</h3>
-              <p className="text-slate-400 mb-8 max-w-md mx-auto text-lg">
-                Get started by creating your first Bitcoin stream and begin your decentralized finance journey.
-              </p>
-              <Link
-                to="/create"
-                className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-yellow-400 hover:from-orange-600 hover:to-yellow-500 text-white font-bold px-10 py-5 rounded-3xl shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 transform hover:scale-110 border border-orange-300/30 backdrop-blur-xl text-xl"
-              >
-                <Plus size={28} />
-                <span>Create Your First Stream</span>
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {recentStreams.map((stream) => (
-                <StreamCard
-                  key={stream.id}
-                  stream={stream}
-                  currentUser={user}
-                />
-              ))}
-            </div>
-          )}
+            ) : (
+              <div className="space-y-6 relative z-10">
+                {recentStreams.map((stream, index) => (
+                  <div key={stream.id} className="transform hover:scale-102 hover:translateZ-5 transition-all duration-300" style={{transformStyle: 'preserve-3d'}}>
+                    <StreamCard
+                      stream={stream}
+                      currentUser={user}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <QuickActionCard
-            to="/create"
-            icon={Plus}
-            iconBg="bg-gradient-to-br from-orange-500 to-yellow-400 shadow-2xl border border-orange-200/30 backdrop-blur-xl"
-            title="Create Stream"
-            description="Start streaming Bitcoin payments"
-            ariaLabel="Create a new Bitcoin stream"
-          />
-          <QuickActionCard
-            to="/templates"
-            icon={Clock}
-            iconBg="bg-gradient-to-br from-blue-500 to-blue-300 shadow-2xl border border-blue-200/30 backdrop-blur-xl"
-            title="Templates"
-            description="Use predefined stream templates"
-            ariaLabel="View stream templates"
-          />
-          <QuickActionCard
-            to="/analytics"
-            icon={TrendingUp}
-            iconBg="bg-gradient-to-br from-green-500 to-green-300 shadow-2xl border border-green-200/30 backdrop-blur-xl"
-            title="Analytics"
-            description="View detailed statistics"
-            ariaLabel="View analytics"
-          />
+        {/* 3D Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 perspective-1000">
+          <div className="transform hover:scale-110 hover:rotateY-8 hover:translateZ-10 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+            <QuickActionCard
+              to="/create"
+              icon={Plus}
+              iconBg="bg-gradient-to-br from-orange-500 via-yellow-400 to-orange-600 shadow-2xl border-2 border-orange-200/30 backdrop-blur-xl"
+              title="Create Stream"
+              description="Start streaming Bitcoin payments"
+              ariaLabel="Create a new Bitcoin stream"
+            />
+          </div>
+          <div className="transform hover:scale-110 hover:rotateY-8 hover:translateZ-10 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+            <QuickActionCard
+              to="/templates"
+              icon={Clock}
+              iconBg="bg-gradient-to-br from-blue-500 via-cyan-400 to-blue-600 shadow-2xl border-2 border-blue-200/30 backdrop-blur-xl"
+              title="Templates"
+              description="Use predefined stream templates"
+              ariaLabel="View stream templates"
+            />
+          </div>
+          <div className="transform hover:scale-110 hover:rotateY-8 hover:translateZ-10 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+            <QuickActionCard
+              to="/analytics"
+              icon={TrendingUp}
+              iconBg="bg-gradient-to-br from-green-500 via-emerald-400 to-green-600 shadow-2xl border-2 border-green-200/30 backdrop-blur-xl"
+              title="Analytics"
+              description="View detailed statistics"
+              ariaLabel="View analytics"
+            />
+          </div>
         </div>
       </div>
     </div>

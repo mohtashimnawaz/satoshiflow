@@ -95,3 +95,49 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(247, 147, 26, 0.3);
 }
+
+/* 3D Transform Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.translate-z-minus-10 {
+  transform: translateZ(-10px);
+}
+
+.translateZ-5 {
+  transform: translateZ(5px);
+}
+
+.translateZ-10 {
+  transform: translateZ(10px);
+}
+
+.rotateX-3 {
+  transform: rotateX(3deg);
+}
+
+.rotateY-3 {
+  transform: rotateY(3deg);
+}
+
+.rotateY-5 {
+  transform: rotateY(5deg);
+}
+
+.rotateY-8 {
+  transform: rotateY(8deg);
+}
+
+.rotateY-12 {
+  transform: rotateY(12deg);
+}
+
+.scale-102 {
+  transform: scale(1.02);
+}
