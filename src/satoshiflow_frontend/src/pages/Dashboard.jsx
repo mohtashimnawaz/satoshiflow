@@ -239,9 +239,9 @@ const Dashboard = () => {
         `}</style>
       </div>
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-6">
+      <div className="relative z-10 w-full px-4 py-6">
         {/* Header Section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 max-w-6xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent mb-4">
             SatoshiFlow Dashboard
           </h1>
@@ -255,8 +255,8 @@ const Dashboard = () => {
           </Link>
         </div>
 
-        {/* 3D Stats Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Stats Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 max-w-7xl mx-auto px-2">
           <div className="transform hover:scale-105 transition-all duration-300">
             <StatCard
               title="Total Sent"
@@ -296,7 +296,7 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Streams Section */}
-        <div className="mb-8">
+        <div className="mb-6 max-w-7xl mx-auto px-2">
           <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold text-white">Recent Streams</h2>
@@ -340,7 +340,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto px-2">
           <QuickActionCard
             to="/create"
             icon={Plus}
