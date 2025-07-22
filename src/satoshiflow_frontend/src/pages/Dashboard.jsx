@@ -306,7 +306,6 @@ const Dashboard = () => {
                 View All
               </Link>
             </div>
-            </div>
             {recentStreams.length === 0 ? (
               <div className="text-center py-16 relative z-10">
                 <div className="bg-slate-100/20 rounded-full p-8 w-36 h-36 mx-auto mb-8 shadow-2xl flex items-center justify-center transform hover:scale-110 hover:rotateY-12 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
