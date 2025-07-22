@@ -132,9 +132,15 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-[#0f1114] via-[#1a1f2e] to-[#0f1114] overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
       {/* Enhanced 3D Background Elements */}
       <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* Animated Background Mesh */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        </div>
         {/* Floating 3D Bitcoin Icons */}
         {[...Array(15)].map((_, i) => {
           const size = 40 + Math.random() * 120;
@@ -219,6 +225,21 @@ const Dashboard = () => {
             0% { transform: perspective(1000px) translateY(0px) rotateX(0deg) rotateY(0deg); opacity: 0.1; }
             50% { transform: perspective(1000px) translateY(-30px) rotateX(180deg) rotateY(180deg); opacity: 0.2; }
             100% { transform: perspective(1000px) translateY(0px) rotateX(360deg) rotateY(360deg); opacity: 0.1; }
+          }
+          @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+          }
+          .animate-blob {
+            animation: blob 7s infinite;
+          }
+          .animation-delay-2000 {
+            animation-delay: 2s;
+          }
+          .animation-delay-4000 {
+            animation-delay: 4s;
           }
         `}</style>
       </div>
@@ -342,32 +363,32 @@ const Dashboard = () => {
         </div>
 
         {/* 3D Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 perspective-1000">
-          <div className="transform hover:scale-110 hover:rotateY-8 hover:translateZ-10 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="transform hover:scale-105 transition-all duration-300">
             <QuickActionCard
               to="/create"
               icon={Plus}
-              iconBg="bg-gradient-to-br from-orange-500 via-yellow-400 to-orange-600 shadow-2xl border-2 border-orange-200/30 backdrop-blur-xl"
+              iconBg="bg-gradient-to-br from-orange-500 via-yellow-400 to-orange-600 shadow-lg"
               title="Create Stream"
               description="Start streaming Bitcoin payments"
               ariaLabel="Create a new Bitcoin stream"
             />
           </div>
-          <div className="transform hover:scale-110 hover:rotateY-8 hover:translateZ-10 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+          <div className="transform hover:scale-105 transition-all duration-300">
             <QuickActionCard
               to="/templates"
               icon={Clock}
-              iconBg="bg-gradient-to-br from-blue-500 via-cyan-400 to-blue-600 shadow-2xl border-2 border-blue-200/30 backdrop-blur-xl"
+              iconBg="bg-gradient-to-br from-blue-500 via-cyan-400 to-blue-600 shadow-lg"
               title="Templates"
               description="Use predefined stream templates"
               ariaLabel="View stream templates"
             />
           </div>
-          <div className="transform hover:scale-110 hover:rotateY-8 hover:translateZ-10 transition-all duration-500" style={{transformStyle: 'preserve-3d'}}>
+          <div className="transform hover:scale-105 transition-all duration-300">
             <QuickActionCard
               to="/analytics"
               icon={TrendingUp}
-              iconBg="bg-gradient-to-br from-green-500 via-emerald-400 to-green-600 shadow-2xl border-2 border-green-200/30 backdrop-blur-xl"
+              iconBg="bg-gradient-to-br from-green-500 via-emerald-400 to-green-600 shadow-lg"
               title="Analytics"
               description="View detailed statistics"
               ariaLabel="View analytics"
