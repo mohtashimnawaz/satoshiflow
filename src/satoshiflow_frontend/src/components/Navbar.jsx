@@ -28,7 +28,7 @@ const Navbar = () => {
   const { unreadCount } = useNotifications();
 
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: Home },
+    { path: '/dashboard', label: 'Dashboard', icon: Home },
     { path: '/create', label: 'Create Stream', icon: Plus },
     { path: '/streams', label: 'Streams', icon: List },
     { path: '/templates', label: 'Templates', icon: FileText },

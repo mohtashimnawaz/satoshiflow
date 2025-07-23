@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import Navbar from './components/Navbar';
+import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import CreateStream from './pages/CreateStream';
 import StreamList from './pages/StreamList';
@@ -53,29 +54,122 @@ function App() {
     <Router>
       <AuthProvider>
         <NotificationProvider>
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
-            {/* 3D Glassmorphism Background */}
-            <div className="absolute inset-0 z-0 pointer-events-none">
-              <div className="w-full h-full">
-                <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
-                <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/dashboard" element={
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
+                {/* 3D Glassmorphism Background */}
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <div className="w-full h-full">
+                    <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
+                    <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
+                  </div>
+                </div>
+                <div className="relative z-10">
+                  <Navbar />
+                  <main className="container mx-auto px-4 py-8 max-w-7xl">
+                    <Dashboard />
+                  </main>
+                </div>
               </div>
-            </div>
-            <div className="relative z-10">
-              <Navbar />
-              <main className="container mx-auto px-4 py-8 max-w-7xl">
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/create" element={<CreateStream />} />
-                  <Route path="/streams" element={<StreamList />} />
-                  <Route path="/streams/:id" element={<StreamDetails />} />
-                  <Route path="/templates" element={<Templates />} />
-                  <Route path="/analytics" element={<Analytics />} />
-                  <Route path="/notifications" element={<Notifications />} />
-                </Routes>
-              </main>
-            </div>
-          </div>
+            } />
+            <Route path="/create" element={
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <div className="w-full h-full">
+                    <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
+                    <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
+                  </div>
+                </div>
+                <div className="relative z-10">
+                  <Navbar />
+                  <main className="container mx-auto px-4 py-8 max-w-7xl">
+                    <CreateStream />
+                  </main>
+                </div>
+              </div>
+            } />
+            <Route path="/streams" element={
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <div className="w-full h-full">
+                    <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
+                    <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
+                  </div>
+                </div>
+                <div className="relative z-10">
+                  <Navbar />
+                  <main className="container mx-auto px-4 py-8 max-w-7xl">
+                    <StreamList />
+                  </main>
+                </div>
+              </div>
+            } />
+            <Route path="/streams/:id" element={
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <div className="w-full h-full">
+                    <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
+                    <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
+                  </div>
+                </div>
+                <div className="relative z-10">
+                  <Navbar />
+                  <main className="container mx-auto px-4 py-8 max-w-7xl">
+                    <StreamDetails />
+                  </main>
+                </div>
+              </div>
+            } />
+            <Route path="/templates" element={
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <div className="w-full h-full">
+                    <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
+                    <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
+                  </div>
+                </div>
+                <div className="relative z-10">
+                  <Navbar />
+                  <main className="container mx-auto px-4 py-8 max-w-7xl">
+                    <Templates />
+                  </main>
+                </div>
+              </div>
+            } />
+            <Route path="/analytics" element={
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <div className="w-full h-full">
+                    <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
+                    <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
+                  </div>
+                </div>
+                <div className="relative z-10">
+                  <Navbar />
+                  <main className="container mx-auto px-4 py-8 max-w-7xl">
+                    <Analytics />
+                  </main>
+                </div>
+              </div>
+            } />
+            <Route path="/notifications" element={
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <div className="w-full h-full">
+                    <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
+                    <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
+                  </div>
+                </div>
+                <div className="relative z-10">
+                  <Navbar />
+                  <main className="container mx-auto px-4 py-8 max-w-7xl">
+                    <Notifications />
+                  </main>
+                </div>
+              </div>
+            } />
+          </Routes>
         </NotificationProvider>
       </AuthProvider>
     </Router>
