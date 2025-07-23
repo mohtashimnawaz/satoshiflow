@@ -138,190 +138,283 @@ const Notifications = () => {
 
   if (notifications.length === 0) {
     return (
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
-            <p className="text-gray-600 mt-1">Stay updated with your stream activities</p>
+      <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+        {/* 3D Background Elements */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-0 -left-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+            <div className="absolute top-0 -right-4 w-72 h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
           </div>
+          
+          {/* Floating notification icons */}
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute animate-float"
+              style={{
+                left: `${15 + i * 12}%`,
+                top: `${20 + (i % 2) * 40}%`,
+                width: `${80 + i * 10}px`,
+                height: `${80 + i * 10}px`,
+                background: `linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(249, 115, 22, 0.05))`,
+                borderRadius: '50%',
+                border: '1px solid rgba(251, 191, 36, 0.2)',
+                backdropFilter: 'blur(10px)',
+                animationDelay: `${i * 0.7}s`,
+                animationDuration: `${9 + i}s`,
+              }}
+            />
+          ))}
         </div>
 
-        <div className="text-center py-12">
-          <Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No notifications yet</h3>
-          <p className="text-gray-500">
-            You'll see notifications here when you create or receive streams
-          </p>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
+          <div className="text-center">
+            <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-red-600 bg-clip-text text-transparent mb-4">
+              Notifications
+            </h1>
+            <p className="text-slate-300 text-lg md:text-xl font-medium mb-12">
+              Stay updated with your stream activities
+            </p>
+          </div>
+
+          <div className="flex justify-center">
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-16 max-w-lg">
+              <div className="bg-gradient-to-br from-orange-400 to-orange-600 p-8 rounded-2xl shadow-lg mx-auto w-32 h-32 flex items-center justify-center mb-8">
+                <Bell className="h-16 w-16 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4 text-center">No notifications yet</h3>
+              <p className="text-slate-300 text-center text-lg">
+                You'll see notifications here when you create or receive streams
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
-          <p className="text-gray-600 mt-1">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+      {/* Enhanced 3D Background Elements */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-0 -right-4 w-72 h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        </div>
+        
+        {/* Floating notification icons */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${8 + i * 11}%`,
+              top: `${15 + (i % 3) * 25}%`,
+              width: `${70 + i * 8}px`,
+              height: `${70 + i * 8}px`,
+              background: `linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(249, 115, 22, 0.05))`,
+              borderRadius: i % 3 === 0 ? '50%' : i % 3 === 1 ? '25%' : '15%',
+              border: '1px solid rgba(251, 191, 36, 0.2)',
+              backdropFilter: 'blur(10px)',
+              animationDelay: `${i * 0.6}s`,
+              animationDuration: `${8 + i}s`,
+            }}
+          />
+        ))}
+
+        {/* 3D Grid Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div 
+            className="w-full h-full"
+            style={{
+              backgroundImage: `linear-gradient(rgba(251, 191, 36, 0.1) 1px, transparent 1px),
+                               linear-gradient(90deg, rgba(251, 191, 36, 0.1) 1px, transparent 1px)`,
+              backgroundSize: '80px 80px',
+              transform: 'perspective(800px) rotateX(20deg)',
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-red-600 bg-clip-text text-transparent mb-4">
+            Notifications
+          </h1>
+          <p className="text-slate-300 text-lg md:text-xl font-medium mb-6">
             {unreadCount > 0 && `${unreadCount} unread • `}
             {filteredNotifications.length} total
           </p>
-        </div>
-        
-        {unreadCount > 0 && (
-          <button
-            onClick={handleMarkAllAsRead}
-            disabled={loading}
-            className="mt-4 md:mt-0 inline-flex items-center space-x-2 btn-primary disabled:opacity-50"
-          >
-            <CheckCheck size={16} />
-            <span>Mark All Read</span>
-          </button>
-        )}
-      </div>
-
-      {/* Filters */}
-      <div className="card">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <Filter className="h-4 w-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-700">Filter:</span>
-            </div>
-            
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="input-field min-w-0"
+          
+          {unreadCount > 0 && (
+            <button
+              onClick={handleMarkAllAsRead}
+              disabled={loading}
+              className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
             >
-              <option value="all">All ({notifications.length})</option>
-              <option value="unread">Unread ({unreadCount})</option>
-              <option value="read">Read ({notifications.length - unreadCount})</option>
+              <CheckCheck size={20} />
+              <span>Mark All Read</span>
+            </button>
+          )}
+        </div>
+
+        {/* Filters */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <Filter className="h-5 w-5 text-orange-400" />
+                <span className="text-sm font-medium text-slate-300">Filter:</span>
+              </div>
+              
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+              >
+                <option value="all">All ({notifications.length})</option>
+                <option value="unread">Unread ({unreadCount})</option>
+                <option value="read">Read ({notifications.length - unreadCount})</option>
+              </select>
+            </div>
+
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+            >
+              <option value="all">All Types</option>
+              {notificationTypes.map(type => (
+                <option key={type} value={type}>
+                  {formatNotificationType(type)} ({getTypeCount(type)})
+                </option>
+              ))}
             </select>
           </div>
-
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="input-field min-w-0"
-          >
-            <option value="all">All Types</option>
-            {notificationTypes.map(type => (
-              <option key={type} value={type}>
-                {formatNotificationType(type)} ({getTypeCount(type)})
-              </option>
-            ))}
-          </select>
         </div>
-      </div>
 
-      {/* Quick Filter Tabs */}
-      <div className="flex space-x-2 overflow-x-auto">
-        {[
-          { key: 'all', label: 'All', count: notifications.length },
-          { key: 'unread', label: 'Unread', count: unreadCount },
-          { key: 'read', label: 'Read', count: notifications.length - unreadCount },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setFilter(tab.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-              filter === tab.key
-                ? 'bg-orange-100 text-orange-700'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {tab.label} ({tab.count})
-          </button>
-        ))}
-      </div>
-
-      {/* Notifications List */}
-      <div className="space-y-4">
-        {filteredNotifications.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <Bell className="h-12 w-12 mx-auto" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No notifications found</h3>
-            <p className="text-gray-500">
-              Try adjusting your filters to see more notifications
-            </p>
-          </div>
-        ) : (
-          filteredNotifications.map((notification) => (
-            <div
-              key={notification.id}
-              className={`border rounded-lg p-4 transition-all ${
-                notification.read 
-                  ? 'bg-white border-gray-200' 
-                  : `${getNotificationColor(notification.notification_type)} border-2`
+        {/* Quick Filter Tabs */}
+        <div className="flex space-x-3 overflow-x-auto mb-8">
+          {[
+            { key: 'all', label: 'All', count: notifications.length },
+            { key: 'unread', label: 'Unread', count: unreadCount },
+            { key: 'read', label: 'Read', count: notifications.length - unreadCount },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setFilter(tab.key)}
+              className={`px-6 py-3 rounded-xl text-sm font-bold whitespace-nowrap transition-all duration-300 transform hover:scale-105 ${
+                filter === tab.key
+                  ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg'
+                  : 'bg-white/10 backdrop-blur-sm text-slate-300 hover:bg-white/20 border border-white/20'
               }`}
             >
-              <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 mt-1">
-                  {getNotificationIcon(notification.notification_type)}
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {formatNotificationType(notification.notification_type)}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {notification.message}
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs text-gray-500">
-                        {formatDistanceToNow(new Date(notification.timestamp * 1000), { 
-                          addSuffix: true 
-                        })}
-                      </span>
-                      
-                      {!notification.read && (
-                        <button
-                          onClick={() => handleMarkAsRead(notification.id)}
-                          className="p-1 hover:bg-gray-100 rounded"
-                          title="Mark as read"
-                        >
-                          <Check className="h-4 w-4 text-gray-500" />
-                        </button>
-                      )}
+              {tab.label} ({tab.count})
+            </button>
+          ))}
+        </div>
+
+        {/* Notifications List */}
+        <div className="space-y-4">
+          {filteredNotifications.length === 0 ? (
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-16 text-center">
+              <div className="bg-gradient-to-br from-orange-400 to-orange-600 p-6 rounded-2xl shadow-lg mx-auto w-24 h-24 flex items-center justify-center mb-6">
+                <Bell className="h-12 w-12 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">No notifications found</h3>
+              <p className="text-slate-300 text-lg">
+                Try adjusting your filters to see more notifications
+              </p>
+            </div>
+          ) : (
+            filteredNotifications.map((notification, index) => (
+              <div
+                key={notification.id}
+                className={`bg-white/10 backdrop-blur-xl rounded-2xl border transition-all duration-300 p-6 hover:bg-white/15 hover:scale-[1.02] animate-fadeInUp ${
+                  notification.read 
+                    ? 'border-white/20' 
+                    : 'border-orange-500/50 shadow-lg shadow-orange-500/20'
+                }`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 mt-1">
+                    <div className={`p-3 rounded-xl ${
+                      notification.read 
+                        ? 'bg-white/10' 
+                        : 'bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg'
+                    }`}>
+                      {React.cloneElement(getNotificationIcon(notification.notification_type), {
+                        className: `h-6 w-6 ${notification.read ? 'text-slate-400' : 'text-white'}`
+                      })}
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between mt-2">
-                    <div className="flex items-center space-x-2 text-xs text-gray-500">
-                      <span>Stream #{notification.stream_id}</span>
-                      <span>•</span>
-                      <span className="font-mono">
-                        {principalToText(notification.user).slice(0, 8)}...
-                      </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <p className="text-lg font-bold text-white">
+                          {formatNotificationType(notification.notification_type)}
+                        </p>
+                        <p className="text-slate-300 mt-1">
+                          {notification.message}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center space-x-3">
+                        <span className="text-sm text-slate-400">
+                          {formatDistanceToNow(new Date(notification.timestamp * 1000), { 
+                            addSuffix: true 
+                          })}
+                        </span>
+                        
+                        {!notification.read && (
+                          <button
+                            onClick={() => handleMarkAsRead(notification.id)}
+                            className="p-2 hover:bg-white/20 rounded-lg transition-all duration-300 transform hover:scale-110"
+                            title="Mark as read"
+                          >
+                            <Check className="h-5 w-5 text-orange-400" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                     
-                    {!notification.read && (
-                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    )}
+                    <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+                      <div className="flex items-center space-x-3 text-sm text-slate-400">
+                        <span className="bg-orange-500/20 px-3 py-1 rounded-full text-orange-300">
+                          Stream #{notification.stream_id}
+                        </span>
+                        <span className="font-mono bg-white/10 px-3 py-1 rounded-full">
+                          {principalToText(notification.user).slice(0, 8)}...
+                        </span>
+                      </div>
+                      
+                      {!notification.read && (
+                        <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse shadow-lg shadow-orange-500/50"></div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
+            ))
+          )}
+        </div>
+
+        {/* Load More / Pagination */}
+        {filteredNotifications.length > 0 && (
+          <div className="text-center py-8">
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
+              <p className="text-slate-300 text-lg">
+                Showing {filteredNotifications.length} notifications
+              </p>
             </div>
-          ))
+          </div>
         )}
       </div>
-
-      {/* Load More / Pagination could be added here */}
-      {filteredNotifications.length > 0 && (
-        <div className="text-center py-4">
-          <p className="text-sm text-gray-500">
-            Showing {filteredNotifications.length} notifications
-          </p>
-        </div>
-      )}
     </div>
   );
 };
