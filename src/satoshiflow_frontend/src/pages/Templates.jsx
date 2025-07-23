@@ -114,223 +114,277 @@ const Templates = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Templates</h1>
-          <p className="text-gray-600 mt-1">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+      {/* Enhanced 3D Background Elements */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-0 -right-4 w-72 h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        </div>
+        
+        {/* Floating 3D Template Icons */}
+        {[...Array(9)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${10 + i * 10}%`,
+              top: `${12 + (i % 3) * 28}%`,
+              width: `${65 + i * 7}px`,
+              height: `${65 + i * 7}px`,
+              background: `linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(249, 115, 22, 0.05))`,
+              borderRadius: i % 3 === 0 ? '50%' : i % 3 === 1 ? '25%' : '15%',
+              border: '1px solid rgba(251, 191, 36, 0.2)',
+              backdropFilter: 'blur(10px)',
+              animationDelay: `${i * 0.5}s`,
+              animationDuration: `${8 + i}s`,
+            }}
+          />
+        ))}
+
+        {/* 3D Grid Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div 
+            className="w-full h-full"
+            style={{
+              backgroundImage: `linear-gradient(rgba(251, 191, 36, 0.1) 1px, transparent 1px),
+                               linear-gradient(90deg, rgba(251, 191, 36, 0.1) 1px, transparent 1px)`,
+              backgroundSize: '70px 70px',
+              transform: 'perspective(700px) rotateX(25deg)',
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-red-600 bg-clip-text text-transparent mb-4">
+            Stream Templates
+          </h1>
+          <p className="text-slate-300 text-lg md:text-xl font-medium mb-6">
             Reusable stream configurations for common payments
           </p>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            <Plus size={24} />
+            <span>Create Template</span>
+          </button>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="mt-4 md:mt-0 inline-flex items-center space-x-2 btn-primary"
-        >
-          <Plus size={20} />
-          <span>Create Template</span>
-        </button>
-      </div>
 
-      {/* Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search templates..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10 input-field"
-        />
-      </div>
+        {/* Search */}
+        <div className="flex justify-center mb-8">
+          <div className="relative max-w-md w-full">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search templates..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+            />
+          </div>
+        </div>
 
-      {/* Templates Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTemplates.map((template) => (
-          <div key={template.id} className="card hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <div className="bg-blue-100 p-2 rounded-lg">
-                  <FileText className="h-5 w-5 text-blue-600" />
+        {/* Templates Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredTemplates.map((template, index) => (
+            <div 
+              key={template.id} 
+              className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 hover:scale-105 transition-all duration-300 group animate-fadeInUp"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-gradient-to-br from-orange-400 to-orange-600 p-3 rounded-xl shadow-lg">
+                    <FileText className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-xl text-white group-hover:text-orange-300 transition-colors duration-300">{template.name}</h3>
+                    <p className="text-sm text-slate-400">
+                      Created by {principalToText(template.creator).slice(0, 8)}...
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{template.name}</h3>
-                  <p className="text-sm text-gray-500">
-                    Created by {principalToText(template.creator).slice(0, 8)}...
-                  </p>
+                
+                {principalToText(template.creator) === principalToText(user) && (
+                  <div className="flex space-x-2">
+                    <button className="p-2 hover:bg-white/20 rounded-lg transition-colors duration-300">
+                      <Edit className="h-5 w-5 text-slate-300 hover:text-orange-400" />
+                    </button>
+                    <button className="p-2 hover:bg-white/20 rounded-lg transition-colors duration-300">
+                      <Trash2 className="h-5 w-5 text-slate-300 hover:text-red-400" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-slate-300 mb-6 line-clamp-2">
+                {template.description}
+              </p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+                  <span className="text-slate-400 flex items-center">
+                    <DollarSign className="h-5 w-5 mr-2 text-orange-400" />
+                    Rate
+                  </span>
+                  <span className="font-bold text-white">{template.sats_per_sec !== undefined && template.sats_per_sec !== null ? Number(template.sats_per_sec).toLocaleString() : 'N/A'} sats/sec</span>
+                </div>
+                
+                <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+                  <span className="text-slate-400 flex items-center">
+                    <Clock className="h-5 w-5 mr-2 text-orange-400" />
+                    Duration
+                  </span>
+                  <span className="font-bold text-white">{formatDuration(template.duration_secs)}</span>
+                </div>
+                
+                <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+                  <span className="text-slate-400">Total Amount</span>
+                  <span className="font-bold text-orange-400">{template.sats_per_sec !== undefined && template.duration_secs !== undefined && template.sats_per_sec !== null && template.duration_secs !== null ? (Number(template.sats_per_sec) * Number(template.duration_secs)).toLocaleString() : 'N/A'} sats</span>
                 </div>
               </div>
-              
-              {principalToText(template.creator) === principalToText(user) && (
-                <div className="flex space-x-1">
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Edit className="h-4 w-4 text-gray-500" />
+
+              <div className="flex items-center justify-between pt-4 border-t border-white/20">
+                <div className="flex items-center space-x-2 text-sm text-slate-400">
+                  <User className="h-5 w-5 text-orange-400" />
+                  <span>Used {template.usage_count} times</span>
+                </div>
+                
+                <div className="flex space-x-3">
+                  <button 
+                    onClick={() => handleUseTemplate(template)}
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  >
+                    Use Template
                   </button>
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Trash2 className="h-4 w-4 text-gray-500" />
+                  <button className="bg-white/10 hover:bg-white/20 text-slate-300 p-2 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <Copy className="h-5 w-5" />
                   </button>
                 </div>
-              )}
-            </div>
-
-            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-              {template.description}
-            </p>
-
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500 flex items-center">
-                  <DollarSign className="h-4 w-4 mr-1" />
-                  Rate
-                </span>
-                <span className="font-medium">{template.sats_per_sec !== undefined && template.sats_per_sec !== null ? Number(template.sats_per_sec).toLocaleString() : 'N/A'} sats/sec</span>
               </div>
-              
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500 flex items-center">
-                  <Clock className="h-4 w-4 mr-1" />
-                  Duration
-                </span>
-                <span className="font-medium">{formatDuration(template.duration_secs)}</span>
-              </div>
-              
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">Total Amount</span>
-                <span className="font-medium">{template.sats_per_sec !== undefined && template.duration_secs !== undefined && template.sats_per_sec !== null && template.duration_secs !== null ? (Number(template.sats_per_sec) * Number(template.duration_secs)).toLocaleString() : 'N/A'} sats</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <User className="h-4 w-4" />
-                <span>Used {template.usage_count} times</span>
-              </div>
-              
-              <div className="flex space-x-2">
-                <button 
-                  onClick={() => handleUseTemplate(template)}
-                  className="btn-primary text-sm px-3 py-1"
-                >
-                  Use Template
-                </button>
-                <button className="btn-secondary text-sm px-3 py-1">
-                  <Copy className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
           </div>
         ))}
       </div>
 
-      {/* Empty State */}
-      {filteredTemplates.length === 0 && (
-        <div className="text-center py-12">
-          <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            {searchTerm ? 'No templates found' : 'No templates yet'}
-          </h3>
-          <p className="text-gray-500 mb-6">
-            {searchTerm 
-              ? 'Try adjusting your search terms'
-              : 'Create your first template to reuse stream configurations'
-            }
-          </p>
-          {!searchTerm && (
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="btn-primary"
-            >
-              <Plus size={20} className="mr-2" />
-              Create Your First Template
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Create Template Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Create New Template</h2>
-            
-            <form onSubmit={handleCreateTemplate} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Template Name *
-                </label>
-                <input
-                  type="text"
-                  value={newTemplate.name}
-                  onChange={(e) => setNewTemplate({...newTemplate, name: e.target.value})}
-                  className="input-field"
-                  placeholder="e.g., Monthly Subscription"
-                  required
-                />
+        {/* Empty State */}
+        {filteredTemplates.length === 0 && (
+          <div className="text-center py-16">
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-12 max-w-md mx-auto">
+              <div className="bg-gradient-to-br from-orange-400 to-orange-600 p-6 rounded-2xl shadow-lg mx-auto w-24 h-24 flex items-center justify-center mb-6">
+                <FileText className="h-12 w-12 text-white" />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={newTemplate.description}
-                  onChange={(e) => setNewTemplate({...newTemplate, description: e.target.value})}
-                  className="input-field"
-                  rows="3"
-                  placeholder="Describe what this template is for..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Rate (sats/second) *
-                </label>
-                <input
-                  type="number"
-                  value={newTemplate.satsPerSec}
-                  onChange={(e) => setNewTemplate({...newTemplate, satsPerSec: e.target.value})}
-                  className="input-field"
-                  placeholder="100"
-                  min="1"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Duration (minutes) *
-                </label>
-                <input
-                  type="number"
-                  value={newTemplate.duration}
-                  onChange={(e) => setNewTemplate({...newTemplate, duration: e.target.value})}
-                  className="input-field"
-                  placeholder="60"
-                  min="1"
-                  required
-                />
-              </div>
-
-              <div className="flex space-x-3 pt-4">
+              <h3 className="text-2xl font-bold text-white mb-4">
+                {searchTerm ? 'No templates found' : 'No templates yet'}
+              </h3>
+              <p className="text-slate-300 mb-8 text-lg">
+                {searchTerm 
+                  ? 'Try adjusting your search terms'
+                  : 'Create your first template to reuse stream configurations'
+                }
+              </p>
+              {!searchTerm && (
                 <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="flex-1 btn-secondary"
+                  onClick={() => setShowCreateModal(true)}
+                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 >
-                  Cancel
+                  <Plus size={24} />
+                  <span>Create Your First Template</span>
                 </button>
-                <button
-                  type="submit"
-                  disabled={createLoading}
-                  className="flex-1 btn-primary disabled:opacity-50"
-                >
-                  {createLoading ? 'Creating...' : 'Create Template'}
-                </button>
-              </div>
-            </form>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Create Template Modal */}
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 w-full max-w-md animate-fadeInUp">
+              <h2 className="text-2xl font-bold text-white mb-6 text-center">Create New Template</h2>
+              
+              <form onSubmit={handleCreateTemplate} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Template Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={newTemplate.name}
+                    onChange={(e) => setNewTemplate({...newTemplate, name: e.target.value})}
+                    className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                    placeholder="e.g., Monthly Subscription"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    value={newTemplate.description}
+                    onChange={(e) => setNewTemplate({...newTemplate, description: e.target.value})}
+                    className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                    rows="3"
+                    placeholder="Describe what this template is for..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Rate (sats/second) *
+                  </label>
+                  <input
+                    type="number"
+                    value={newTemplate.satsPerSec}
+                    onChange={(e) => setNewTemplate({...newTemplate, satsPerSec: e.target.value})}
+                    className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                    placeholder="100"
+                    min="1"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Duration (minutes) *
+                  </label>
+                  <input
+                    type="number"
+                    value={newTemplate.duration}
+                    onChange={(e) => setNewTemplate({...newTemplate, duration: e.target.value})}
+                    className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                    placeholder="60"
+                    min="1"
+                    required
+                  />
+                </div>
+
+                <div className="flex space-x-4 pt-6">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateModal(false)}
+                    className="flex-1 bg-white/10 hover:bg-white/20 text-slate-300 font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={createLoading}
+                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none shadow-lg"
+                  >
+                    {createLoading ? 'Creating...' : 'Create Template'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
