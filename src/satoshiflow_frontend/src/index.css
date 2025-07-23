@@ -55,6 +55,53 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes fadeInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes rotate3D {
+  from { transform: rotate3d(1, 1, 0, 0deg); }
+  to { transform: rotate3d(1, 1, 0, 360deg); }
+}
+
+@keyframes pulse3D {
+  0%, 100% { 
+    transform: scale(1) rotateZ(0deg);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.05) rotateZ(2deg);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceFloat {
+  0%, 100% { 
+    transform: translateY(0px) rotateZ(0deg); 
+  }
+  25% { 
+    transform: translateY(-5px) rotateZ(1deg); 
+  }
+  50% { 
+    transform: translateY(-10px) rotateZ(0deg); 
+  }
+  75% { 
+    transform: translateY(-5px) rotateZ(-1deg); 
+  }
+}
+
 .fade-in {
   animation: fadeIn 0.3s ease-out;
 }
@@ -65,6 +112,27 @@ body {
 
 .slide-up {
   animation: slideUp 0.3s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+.animate-rotate-3d {
+  animation: rotate3D 20s linear infinite;
+}
+
+.animate-pulse-3d {
+  animation: pulse3D 2s ease-in-out infinite;
+}
+
+.animate-bounce-float {
+  animation: bounceFloat 4s ease-in-out infinite;
 }
 
 /* Bitcoin gradient */
