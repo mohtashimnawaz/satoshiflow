@@ -261,36 +261,66 @@ const StreamList = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Streams</h1>
-          <p className="text-gray-600 mt-1">
-            {filteredStreams.length} of {streams.length} streams
-          </p>
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+      {/* Enhanced 3D Background Elements */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-0 -right-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
         </div>
-        <Link
-          to="/create"
-          className="mt-4 md:mt-0 inline-flex items-center space-x-2 btn-primary"
-        >
-          <Plus size={20} />
-          <span>Create Stream</span>
-        </Link>
+        
+        {/* Floating 3D Stream Icons */}
+        {[...Array(10)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${8 + i * 10}%`,
+              top: `${15 + (i % 3) * 30}%`,
+              width: `${60 + i * 7}px`,
+              height: `${60 + i * 7}px`,
+              background: `linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.05))`,
+              borderRadius: i % 2 === 0 ? '50%' : '20%',
+              border: '1px solid rgba(59, 130, 246, 0.2)',
+              backdropFilter: 'blur(10px)',
+              animationDelay: `${i * 0.4}s`,
+              animationDuration: `${7 + i}s`,
+            }}
+          />
+        ))}
       </div>
 
-      {/* Search and Filters */}
-      <div className="card">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search streams..."
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent mb-4">
+            Stream Library
+          </h1>
+          <p className="text-slate-300 text-lg font-medium mb-6">
+            {filteredStreams.length} of {streams.length} streams
+          </p>
+          <Link
+            to="/create"
+            className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            <Plus size={24} />
+            <span>Create Stream</span>
+          </Link>
+        </div>
+
+        {/* Search and Filters */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 mb-8 hover:bg-white/15 transition-all duration-300">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            {/* Search */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search streams..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 input-field"
+              className="pl-10 w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
             />
           </div>
 
@@ -298,9 +328,9 @@ const StreamList = () => {
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 btn-secondary"
+              className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-3 rounded-xl transition-all duration-300"
             >
-              <Filter size={16} />
+              <Filter size={16} className="text-blue-400" />
               <span>Filters</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
             </button>
@@ -308,7 +338,7 @@ const StreamList = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="input-field min-w-0"
+              className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -322,15 +352,15 @@ const StreamList = () => {
 
         {/* Expanded Filters */}
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="mt-6 pt-6 border-t border-white/20">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Status Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Status</label>
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="input-field"
+                  className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">All ({getStatusCount('all')})</option>
                   <option value="active">Active ({getStatusCount('active')})</option>
@@ -342,11 +372,11 @@ const StreamList = () => {
 
               {/* Type Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Type</label>
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
-                  className="input-field"
+                  className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">All ({getTypeCount('all')})</option>
                   <option value="outgoing">Outgoing ({getTypeCount('outgoing')})</option>
@@ -355,9 +385,9 @@ const StreamList = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center space-x-4 text-sm text-slate-300">
                 <div className="flex items-center space-x-1">
-                  <DollarSign size={14} />
+                  <DollarSign size={14} className="text-orange-400" />
                   <span>
                     {(() => { const total = streams.reduce((sum, s) => sum + Number(s.total_locked), 0); return total !== undefined && total !== null ? Number(total).toLocaleString() : 'N/A'; })()} sats total
                   </span>
@@ -369,7 +399,7 @@ const StreamList = () => {
       </div>
 
       {/* Quick Filter Tabs */}
-      <div className="flex space-x-2 overflow-x-auto">
+      <div className="flex space-x-2 overflow-x-auto pb-2 mb-6">
         {[
           { key: 'all', label: 'All', count: getStatusCount('all') },
           { key: 'active', label: 'Active', count: getStatusCount('active') },
@@ -380,10 +410,10 @@ const StreamList = () => {
           <button
             key={tab.key}
             onClick={() => setStatusFilter(tab.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+            className={`px-6 py-3 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-300 ${
               statusFilter === tab.key
-                ? 'bg-orange-100 text-orange-700'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+                : 'bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white backdrop-blur-sm border border-white/20'
             }`}
           >
             {tab.label} ({tab.count})
@@ -394,43 +424,52 @@ const StreamList = () => {
       {/* Streams List */}
       <div className="space-y-4">
         {filteredStreams.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <Search className="h-12 w-12 mx-auto" />
+          <div className="text-center py-16">
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-12 max-w-md mx-auto">
+              <div className="text-slate-400 mb-6">
+                <Search className="h-16 w-16 mx-auto text-blue-400" />
+              </div>
+              <h3 className="text-2xl font-semibold text-white mb-4">No streams found</h3>
+              <p className="text-slate-300 mb-8">
+                {searchTerm || statusFilter !== 'all' || typeFilter !== 'all'
+                  ? 'Try adjusting your filters or search terms'
+                  : 'Get started by creating your first stream'
+                }
+              </p>
+              {streams.length === 0 && (
+                <Link 
+                  to="/create" 
+                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <Plus size={20} />
+                  <span>Create Your First Stream</span>
+                </Link>
+              )}
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No streams found</h3>
-            <p className="text-gray-500 mb-6">
-              {searchTerm || statusFilter !== 'all' || typeFilter !== 'all'
-                ? 'Try adjusting your filters or search terms'
-                : 'Get started by creating your first stream'
-              }
-            </p>
-            {streams.length === 0 && (
-              <Link to="/create" className="btn-primary">
-                <Plus size={20} className="mr-2" />
-                Create Your First Stream
-              </Link>
-            )}
           </div>
         ) : (
-          filteredStreams.map((stream) => (
-            <StreamCard
-              key={stream.id}
-              stream={stream}
-              currentUser={user}
-            />
+          filteredStreams.map((stream, index) => (
+            <div key={stream.id} className="transform hover:scale-102 transition-all duration-300" style={{ animationDelay: `${index * 0.1}s` }}>
+              <StreamCard
+                stream={stream}
+                currentUser={user}
+              />
+            </div>
           ))
         )}
       </div>
 
-      {/* Load More / Pagination could be added here */}
+      {/* Load More / Pagination */}
       {filteredStreams.length > 0 && (
-        <div className="text-center py-4">
-          <p className="text-sm text-gray-500">
-            Showing {filteredStreams.length} streams
-          </p>
+        <div className="text-center py-8">
+          <div className="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 p-4 inline-block">
+            <p className="text-sm text-slate-300">
+              Showing <span className="text-blue-400 font-semibold">{filteredStreams.length}</span> streams
+            </p>
+          </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

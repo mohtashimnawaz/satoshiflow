@@ -176,101 +176,160 @@ const Analytics = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
-          <p className="text-gray-600 mt-1">
-            Insights into your streaming activity
-          </p>
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+      {/* Enhanced 3D Background Elements */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-green-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-0 -right-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
         </div>
         
-        <div className="flex items-center space-x-4 mt-4 md:mt-0">
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className="input-field min-w-0"
-          >
-            <option value="7d">Last 7 days</option>
-            <option value="30d">Last 30 days</option>
-          </select>
+        {/* Floating 3D Chart Elements */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${12 + i * 11}%`,
+              top: `${18 + (i % 3) * 25}%`,
+              width: `${55 + i * 8}px`,
+              height: `${55 + i * 8}px`,
+              background: `linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.05))`,
+              borderRadius: i % 3 === 0 ? '50%' : i % 3 === 1 ? '20%' : '10%',
+              border: '1px solid rgba(16, 185, 129, 0.2)',
+              backdropFilter: 'blur(10px)',
+              animationDelay: `${i * 0.6}s`,
+              animationDuration: `${9 + i}s`,
+            }}
+          />
+        ))}
+
+        {/* 3D Data Grid */}
+        <div className="absolute inset-0 opacity-5">
+          <div 
+            className="w-full h-full"
+            style={{
+              backgroundImage: `linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+                               linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px)`,
+              backgroundSize: '80px 80px',
+              transform: 'perspective(800px) rotateX(20deg)',
+            }}
+          />
         </div>
       </div>
 
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-4">
+            Analytics Dashboard
+          </h1>
+          <p className="text-slate-300 text-lg md:text-xl font-medium mb-6">
+            Insights into your streaming activity
+          </p>
+          
+          <div className="flex items-center justify-center space-x-4">
+            <select
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
+              className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+            </select>
+          </div>
+        </div>
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Total Sent"
-          value={`${formatSats(stats.totalSent)} sats`}
-          icon={TrendingUp}
-          color="text-red-500"
-          bgColor="bg-red-50"
-        />
-        <StatCard
-          title="Total Received"
-          value={`${formatSats(stats.totalReceived)} sats`}
-          icon={TrendingDown}
-          color="text-green-500"
-          bgColor="bg-green-50"
-        />
-        <StatCard
-          title="Active Streams"
-          value={stats.activeStreams.toString()}
-          icon={Activity}
-          color="text-blue-500"
-          bgColor="bg-blue-50"
-        />
-        <StatCard
-          title="Completed Streams"
-          value={stats.completedStreams.toString()}
-          icon={Users}
-          color="text-purple-500"
-          bgColor="bg-purple-50"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="transform hover:scale-105 transition-all duration-300">
+          <StatCard
+            title="Total Sent"
+            value={`${formatSats(stats.totalSent)} sats`}
+            icon={TrendingUp}
+            color="text-red-400"
+            bgColor="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20"
+          />
+        </div>
+        <div className="transform hover:scale-105 transition-all duration-300">
+          <StatCard
+            title="Total Received"
+            value={`${formatSats(stats.totalReceived)} sats`}
+            icon={TrendingDown}
+            color="text-green-400"
+            bgColor="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20"
+          />
+        </div>
+        <div className="transform hover:scale-105 transition-all duration-300">
+          <StatCard
+            title="Active Streams"
+            value={stats.activeStreams.toString()}
+            icon={Activity}
+            color="text-blue-400"
+            bgColor="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20"
+          />
+        </div>
+        <div className="transform hover:scale-105 transition-all duration-300">
+          <StatCard
+            title="Completed Streams"
+            value={stats.completedStreams.toString()}
+            icon={Users}
+            color="text-purple-400"
+            bgColor="bg-white/10 backdrop-blur-xl rounded-xl border border-white/20"
+          />
+        </div>
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Volume Chart */}
-        <div className="card">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 transition-all duration-300">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Volume Over Time</h2>
-            <BarChart3 className="h-5 w-5 text-gray-400" />
+            <h2 className="text-2xl font-semibold text-white">Volume Over Time</h2>
+            <BarChart3 className="h-6 w-6 text-green-400" />
           </div>
           
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis tickFormatter={formatSats} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" />
+              <XAxis dataKey="date" stroke="#94A3B8" />
+              <YAxis tickFormatter={formatSats} stroke="#94A3B8" />
               <Tooltip 
                 formatter={(value) => [`${formatSats(value)} sats`, '']}
                 labelFormatter={(label) => `Date: ${label}`}
+                contentStyle={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  color: '#fff'
+                }}
               />
               <Line 
                 type="monotone" 
                 dataKey="sent" 
                 stroke="#EF4444" 
-                strokeWidth={2}
+                strokeWidth={3}
                 name="Sent"
+                dot={{ fill: '#EF4444', strokeWidth: 2, r: 4 }}
               />
               <Line 
                 type="monotone" 
                 dataKey="received" 
                 stroke="#10B981" 
-                strokeWidth={2}
+                strokeWidth={3}
                 name="Received"
+                dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
         {/* Status Distribution */}
-        <div className="card">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 transition-all duration-300">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Stream Status Distribution</h2>
-            <PieChart className="h-5 w-5 text-gray-400" />
+            <h2 className="text-2xl font-semibold text-white">Stream Status Distribution</h2>
+            <PieChart className="h-6 w-6 text-blue-400" />
           </div>
           
           <ResponsiveContainer width="100%" height={300}>
@@ -288,21 +347,29 @@ const Analytics = () => {
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value) => [value, 'Streams']} />
+              <Tooltip 
+                formatter={(value) => [value, 'Streams']}
+                contentStyle={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  color: '#fff'
+                }}
+              />
             </ReChartsPieChart>
           </ResponsiveContainer>
           
-          <div className="mt-4 space-y-2">
+          <div className="mt-6 space-y-3">
             {statusData.map((item) => (
-              <div key={item.name} className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
+              <div key={item.name} className="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                <div className="flex items-center space-x-3">
                   <div 
-                    className="w-3 h-3 rounded-full"
+                    className="w-4 h-4 rounded-full"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-sm text-gray-600">{item.name}</span>
+                  <span className="text-sm text-slate-300">{item.name}</span>
                 </div>
-                <span className="text-sm font-medium">{item.value}</span>
+                <span className="text-sm font-medium text-white">{item.value}</span>
               </div>
             ))}
           </div>
@@ -310,59 +377,72 @@ const Analytics = () => {
       </div>
 
       {/* Activity Chart */}
-      <div className="card">
+      <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 mb-8 hover:bg-white/15 transition-all duration-300">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Stream Activity</h2>
-          <Calendar className="h-5 w-5 text-gray-400" />
+          <h2 className="text-2xl font-semibold text-white">Stream Activity</h2>
+          <Calendar className="h-6 w-6 text-purple-400" />
         </div>
         
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" />
+            <XAxis dataKey="date" stroke="#94A3B8" />
+            <YAxis stroke="#94A3B8" />
             <Tooltip 
               formatter={(value) => [value, 'Streams']}
               labelFormatter={(label) => `Date: ${label}`}
+              contentStyle={{
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '12px',
+                color: '#fff'
+              }}
             />
-            <Bar dataKey="count" fill="#F97316" />
+            <Bar dataKey="count" fill="url(#orangeGradient)" radius={[4, 4, 0, 0]} />
+            <defs>
+              <linearGradient id="orangeGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#F97316" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#EA580C" stopOpacity={0.8}/>
+              </linearGradient>
+            </defs>
           </BarChart>
         </ResponsiveContainer>
       </div>
 
       {/* Additional Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Average Stream Size</h3>
-          <div className="text-3xl font-bold text-gray-900">
+        <div className="bg-gradient-to-br from-orange-500/20 to-red-600/20 backdrop-blur-xl rounded-2xl border border-orange-400/30 p-6 hover:scale-105 transition-all duration-300">
+          <h3 className="text-xl font-semibold text-orange-300 mb-4">Average Stream Size</h3>
+          <div className="text-4xl font-bold text-white mb-2">
             {formatSats(stats.avgStreamSize)} sats
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-orange-200">
             Based on your sent streams
           </p>
         </div>
 
-        <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Total Volume</h3>
-          <div className="text-3xl font-bold text-gray-900">
+        <div className="bg-gradient-to-br from-green-500/20 to-emerald-600/20 backdrop-blur-xl rounded-2xl border border-green-400/30 p-6 hover:scale-105 transition-all duration-300">
+          <h3 className="text-xl font-semibold text-green-300 mb-4">Total Volume</h3>
+          <div className="text-4xl font-bold text-white mb-2">
             {formatSats(stats.totalVolume)} sats
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-green-200">
             Sent + Received
           </p>
         </div>
 
-        <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Success Rate</h3>
-          <div className="text-3xl font-bold text-gray-900">
+        <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 backdrop-blur-xl rounded-2xl border border-blue-400/30 p-6 hover:scale-105 transition-all duration-300">
+          <h3 className="text-xl font-semibold text-blue-300 mb-4">Success Rate</h3>
+          <div className="text-4xl font-bold text-white mb-2">
             {stats.completedStreams > 0 
               ? Math.round((stats.completedStreams / (stats.completedStreams + stats.activeStreams)) * 100)
               : 0}%
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-blue-200">
             Completed vs Active streams
           </p>
         </div>
+      </div>
       </div>
     </div>
   );
