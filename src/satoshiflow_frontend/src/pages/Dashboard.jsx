@@ -239,13 +239,13 @@ const Dashboard = () => {
         `}</style>
       </div>
 
-      <div className="relative z-10 w-full px-4 py-6">
+      <div className="relative z-10 w-full min-h-screen flex flex-col justify-center px-4 py-6">
         {/* Header Section */}
-        <div className="text-center mb-8 max-w-6xl mx-auto">
+        <div className="text-center mb-12 max-w-6xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent mb-4">
             SatoshiFlow Dashboard
           </h1>
-          <p className="text-slate-300 text-lg md:text-xl font-medium mb-6">Welcome back to your Bitcoin streaming platform</p>
+          <p className="text-slate-300 text-lg md:text-xl font-medium mb-8">Welcome back to your Bitcoin streaming platform</p>
           <Link
             to="/create"
             className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
