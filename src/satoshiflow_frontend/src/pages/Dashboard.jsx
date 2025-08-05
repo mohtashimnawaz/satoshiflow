@@ -132,27 +132,27 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
       {/* Enhanced 3D Background Elements */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Animated Background Mesh */}
         <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-          <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+          <div className="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute bottom-0 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
         </div>
-        {/* Floating 3D Bitcoin Icons - Static Positions */}
+        {/* Floating 3D Bitcoin Icons - Contained Positions */}
         {[
-          { size: 80, left: 10, top: 20, delay: 0, duration: 12 },
-          { size: 60, left: 85, top: 15, delay: 2, duration: 15 },
-          { size: 100, left: 15, top: 70, delay: 4, duration: 10 },
-          { size: 70, left: 90, top: 80, delay: 1, duration: 14 },
-          { size: 50, left: 50, top: 10, delay: 3, duration: 16 },
-          { size: 90, left: 75, top: 50, delay: 5, duration: 11 },
-          { size: 65, left: 5, top: 45, delay: 1.5, duration: 13 },
-          { size: 55, left: 95, top: 35, delay: 3.5, duration: 17 },
-          { size: 75, left: 30, top: 85, delay: 2.5, duration: 9 },
-          { size: 85, left: 65, top: 25, delay: 4.5, duration: 12 },
+          { size: 80, left: 5, top: 20, delay: 0, duration: 12 },
+          { size: 60, left: 80, top: 15, delay: 2, duration: 15 },
+          { size: 100, left: 10, top: 70, delay: 4, duration: 10 },
+          { size: 70, left: 85, top: 80, delay: 1, duration: 14 },
+          { size: 50, left: 45, top: 10, delay: 3, duration: 16 },
+          { size: 90, left: 70, top: 50, delay: 5, duration: 11 },
+          { size: 65, left: 15, top: 45, delay: 1.5, duration: 13 },
+          { size: 55, left: 88, top: 35, delay: 3.5, duration: 17 },
+          { size: 75, left: 25, top: 85, delay: 2.5, duration: 9 },
+          { size: 85, left: 60, top: 25, delay: 4.5, duration: 12 },
         ].map((bitcoin, i) => (
           <div
             key={i}
@@ -185,13 +185,13 @@ const Dashboard = () => {
           </div>
         ))}
         
-        {/* Simple Geometric Shapes */}
+        {/* Simple Geometric Shapes - Contained */}
         {[
-          { left: 20, top: 30, size: 80, delay: 0 },
-          { left: 70, top: 60, size: 60, delay: 2 },
-          { left: 85, top: 20, size: 70, delay: 4 },
-          { left: 10, top: 80, size: 50, delay: 1 },
-          { left: 60, top: 15, size: 65, delay: 3 },
+          { left: 15, top: 30, size: 80, delay: 0 },
+          { left: 65, top: 60, size: 60, delay: 2 },
+          { left: 80, top: 20, size: 70, delay: 4 },
+          { left: 8, top: 80, size: 50, delay: 1 },
+          { left: 55, top: 15, size: 65, delay: 3 },
         ].map((shape, i) => (
           <div
             key={`geo${i}`}
@@ -239,24 +239,24 @@ const Dashboard = () => {
         `}</style>
       </div>
 
-      <div className="relative z-10 w-full min-h-screen flex flex-col justify-center px-4 py-6">
+      <div className="relative z-10 w-full px-4 py-6">
         {/* Header Section */}
-        <div className="text-center mb-12 max-w-6xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent mb-4">
+        <div className="text-center mb-8 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent mb-4">
             SatoshiFlow Dashboard
           </h1>
-          <p className="text-slate-300 text-lg md:text-xl font-medium mb-8">Welcome back to your Bitcoin streaming platform</p>
+          <p className="text-slate-300 text-lg font-medium mb-8">Welcome back to your Bitcoin streaming platform</p>
           <Link
             to="/create"
-            className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <Plus size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
             <span>Create Stream</span>
           </Link>
         </div>
 
         {/* Stats Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 max-w-7xl mx-auto px-2">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 max-w-5xl mx-auto px-4">
           <div className="transform hover:scale-105 transition-all duration-300">
             <StatCard
               title="Total Sent"
@@ -296,31 +296,31 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Streams Section */}
-        <div className="mb-6 max-w-7xl mx-auto px-2">
-          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold text-white">Recent Streams</h2>
+        <div className="mb-6 max-w-5xl mx-auto px-4">
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-4 md:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-white">Recent Streams</h2>
               <Link
                 to="/streams"
-                className="text-orange-400 hover:text-orange-300 font-semibold hover:scale-105 transition-all duration-300"
+                className="text-orange-400 hover:text-orange-300 font-semibold hover:scale-105 transition-all duration-300 text-sm md:text-base"
               >
                 View All
               </Link>
             </div>
             {recentStreams.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="bg-white/10 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                  <Wallet className="w-12 h-12 text-slate-400" />
+              <div className="text-center py-8">
+                <div className="bg-white/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <Wallet className="w-8 h-8 text-slate-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">No streams yet</h3>
-                <p className="text-slate-400 mb-6 max-w-md mx-auto">
+                <h3 className="text-lg font-semibold text-white mb-2">No streams yet</h3>
+                <p className="text-slate-400 mb-4 max-w-sm mx-auto text-sm">
                   Get started by creating your first Bitcoin stream.
                 </p>
                 <Link
                   to="/create"
-                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300"
+                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold px-4 py-2 rounded-lg transition-all duration-300 text-sm"
                 >
-                  <Plus size={20} />
+                  <Plus size={16} />
                   <span>Create Your First Stream</span>
                 </Link>
               </div>
@@ -340,7 +340,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto px-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto px-4">
           <QuickActionCard
             to="/create"
             icon={Plus}
