@@ -57,20 +57,9 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/dashboard" element={
-              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col relative">
-                {/* 3D Glassmorphism Background */}
-                <div className="absolute inset-0 z-0 pointer-events-none">
-                  <div className="w-full h-full">
-                    <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-tr from-orange-400 via-yellow-300 to-orange-600 opacity-30 blur-3xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 60px orange)' }}></div>
-                    <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-slate-300 via-orange-200 to-yellow-100 opacity-20 blur-2xl rounded-full shadow-2xl animate-pulse" style={{ filter: 'drop-shadow(0 0 40px orange)' }}></div>
-                  </div>
-                </div>
-                <div className="relative z-10">
-                  <Navbar />
-                  <main className="container mx-auto px-4 py-8 max-w-7xl">
-                    <Dashboard />
-                  </main>
-                </div>
+              <div className="min-h-screen overflow-x-hidden">
+                <Navbar />
+                <Dashboard />
               </div>
             } />
             <Route path="/create" element={

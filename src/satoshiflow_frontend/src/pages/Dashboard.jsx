@@ -239,7 +239,7 @@ const Dashboard = () => {
         `}</style>
       </div>
 
-      <div className="relative z-10 w-full px-4 py-6">
+      <div className="relative z-10 w-full px-4 py-6 overflow-x-hidden">
         {/* Header Section */}
         <div className="text-center mb-8 max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent mb-4">

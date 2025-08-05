@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/* Global overflow prevention */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Prevent any element from causing horizontal overflow */
+* {
+  box-sizing: border-box;
+}
+
 /* Custom CSS variables for Bitcoin colors */
 :root {
   --bitcoin-50: #fff8e1;
