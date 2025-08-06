@@ -8,7 +8,9 @@ import {
   Clock,
   BarChart3,
   PieChart,
-  Calendar
+  Calendar,
+  RefreshCw,
+  Plus
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -452,9 +454,10 @@ const Analytics = () => {
             <button
               onClick={fetchAnalytics}
               disabled={loading}
-              className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none shadow-lg"
+              className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none shadow-lg flex items-center space-x-2"
             >
-              {loading ? 'Refreshing...' : 'Refresh Data'}
+              <RefreshCw className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
+              <span>{loading ? 'Refreshing...' : 'Refresh Data'}</span>
             </button>
           </div>
         </div>
@@ -499,6 +502,30 @@ const Analytics = () => {
         </div>
       </div>
 
+      {/* Empty State or Charts */}
+      {stats.totalStreams === 0 ? (
+        <div className="text-center py-16">
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-12 max-w-md mx-auto">
+            <div className="bg-gradient-to-br from-green-400 to-blue-600 p-6 rounded-2xl shadow-lg mx-auto w-24 h-24 flex items-center justify-center mb-6">
+              <BarChart3 className="h-12 w-12 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-4">
+              No Stream Data Yet
+            </h3>
+            <p className="text-slate-300 mb-8 text-lg">
+              Create your first stream to start seeing analytics and insights
+            </p>
+            <a
+              href="/create"
+              className="inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Create Your First Stream</span>
+            </a>
+          </div>
+        </div>
+      ) : (
+        <>
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Volume Chart */}
@@ -688,6 +715,8 @@ const Analytics = () => {
           </div>
         </div>
       </div>
+        </>
+      )}
       </div>
     </div>
   );
