@@ -187,6 +187,12 @@ const Dashboard = () => {
       
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      
       // Set empty states on error
       setRecentStreams([]);
       setStats({
@@ -195,6 +201,9 @@ const Dashboard = () => {
         activeStreams: 0,
         totalStreams: 0,
       });
+      
+      // Show error to user
+      console.warn('Dashboard data could not be loaded. Please check console for details.');
     } finally {
       setLoading(false);
     }
