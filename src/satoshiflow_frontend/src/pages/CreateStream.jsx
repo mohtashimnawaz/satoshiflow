@@ -13,6 +13,7 @@ import {
 import { Principal } from '@dfinity/principal';
 import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotifications } from '../contexts/NotificationContext';
 import { getBackendActor } from '../utils/getBackendActor';
 
 // Utility: Deeply convert all BigInt fields to Number
@@ -67,6 +68,7 @@ const CreateStream = () => {
   
   const navigate = useNavigate();
   const { user, walletType } = useAuth();
+  const { fetchNotifications } = useNotifications();
 
   useEffect(() => {
     fetchTemplates();
@@ -221,9 +223,12 @@ const CreateStream = () => {
       }
 
       setSuccess(true);
-      setTimeout(() => {
+      
+      // Refresh notifications to get the new stream creation notification
+      setTimeout(async () => {
+        await fetchNotifications();
         navigate(`/streams/${streamId}`);
-      }, 2000);
+      }, 1500);
 
     } catch (error) {
       console.error('Failed to create stream:', error);

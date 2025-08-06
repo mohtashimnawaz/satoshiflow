@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotifications } from '../contexts/NotificationContext';
 import { formatDistanceToNow, format } from 'date-fns';
 
 // Utility: Deeply convert all BigInt fields to Number
@@ -65,6 +66,7 @@ const StreamDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { fetchNotifications } = useNotifications();
   
   const [stream, setStream] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -109,8 +111,10 @@ const StreamDetails = () => {
       
       const result = await satoshiflow_backend.claim_stream(parseInt(id));
       if (result.ok) {
-        setSuccess(`Successfully claimed ${result.ok} sats!`);
+        setSuccess(`Claimed ${result.ok.amount} sats successfully`);
         fetchStreamDetails(); // Refresh data
+        // Refresh notifications to get claim notification
+        await fetchNotifications();
       } else {
         setError(result.err || 'Failed to claim reward');
       }
@@ -160,6 +164,8 @@ const StreamDetails = () => {
       if (result.ok) {
         setSuccess(`Stream cancelled. Refund: ${result.ok.refund} sats, Fee: ${result.ok.fee} sats`);
         fetchStreamDetails(); // Refresh data
+        // Refresh notifications to get cancellation notification
+        await fetchNotifications();
       } else {
         setError(result.err || 'Failed to cancel stream');
       }
@@ -181,6 +187,8 @@ const StreamDetails = () => {
       if (result.ok) {
         setSuccess('Stream paused successfully');
         fetchStreamDetails(); // Refresh data
+        // Refresh notifications to get pause notification
+        await fetchNotifications();
       } else {
         setError(result.err || 'Failed to pause stream');
       }
@@ -202,6 +210,8 @@ const StreamDetails = () => {
       if (result.ok) {
         setSuccess('Stream resumed successfully');
         fetchStreamDetails(); // Refresh data
+        // Refresh notifications to get resume notification
+        await fetchNotifications();
       } else {
         setError(result.err || 'Failed to resume stream');
       }
