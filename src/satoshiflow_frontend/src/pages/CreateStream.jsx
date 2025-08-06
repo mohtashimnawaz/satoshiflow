@@ -15,6 +15,40 @@ import { satoshiflow_backend } from 'declarations/satoshiflow_backend';
 import { useAuth } from '../contexts/AuthContext';
 import { getBackendActor } from '../utils/getBackendActor';
 
+// Utility: Deeply convert all BigInt fields to Number
+function deepBigIntToNumber(obj, seen = new Set()) {
+  if (typeof obj === 'bigint') return Number(obj);
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj !== 'object') return obj;
+  
+  // Avoid circular references
+  if (seen.has(obj)) return obj;
+  seen.add(obj);
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepBigIntToNumber(item, seen));
+  }
+  
+  // Handle special objects like Principal
+  if (obj._isPrincipal || obj.toText || obj._arr) {
+    return obj;
+  }
+  
+  const out = {};
+  for (const k in obj) {
+    if (obj.hasOwnProperty(k)) {
+      try {
+        out[k] = deepBigIntToNumber(obj[k], seen);
+      } catch (error) {
+        // If conversion fails, keep original value
+        console.warn(`Failed to convert ${k}:`, error);
+        out[k] = obj[k];
+      }
+    }
+  }
+  return out;
+}
+
 const CreateStream = () => {
   const [formData, setFormData] = useState({
     recipient: '',
@@ -38,10 +72,44 @@ const CreateStream = () => {
     fetchTemplates();
   }, []);
 
+  // Load selected template from localStorage if coming from templates page
+  useEffect(() => {
+    const savedTemplate = localStorage.getItem('selectedTemplate');
+    if (savedTemplate) {
+      try {
+        const template = JSON.parse(savedTemplate);
+        console.log('Loading saved template:', template);
+        handleTemplateSelect(template);
+        // Clear from localStorage after use
+        localStorage.removeItem('selectedTemplate');
+      } catch (error) {
+        console.error('Error loading saved template:', error);
+        localStorage.removeItem('selectedTemplate');
+      }
+    }
+  }, []);
+
   const fetchTemplates = async () => {
     try {
+      console.log('Fetching templates for CreateStream...');
       const templateList = await satoshiflow_backend.list_templates();
-      setTemplates(templateList);
+      console.log('Raw templates:', templateList);
+      
+      // Convert BigInt values to Numbers for frontend compatibility
+      const convertedTemplates = templateList.map(template => {
+        const converted = deepBigIntToNumber(template);
+        return {
+          ...converted,
+          id: template.id !== undefined ? Number(template.id) : 0,
+          duration_secs: template.duration_secs !== undefined ? Number(template.duration_secs) : 0,
+          sats_per_sec: template.sats_per_sec !== undefined ? Number(template.sats_per_sec) : 0,
+          created_at: template.created_at !== undefined ? Number(template.created_at) : Date.now(),
+          usage_count: template.usage_count !== undefined ? Number(template.usage_count) : 0
+        };
+      });
+      
+      console.log('Converted templates for CreateStream:', convertedTemplates);
+      setTemplates(convertedTemplates);
     } catch (error) {
       console.error('Failed to fetch templates:', error);
     }
@@ -56,13 +124,14 @@ const CreateStream = () => {
   };
 
   const handleTemplateSelect = (template) => {
+    console.log('Selecting template:', template);
     setSelectedTemplate(template);
     setFormData(prev => ({
       ...prev,
-      satsPerSec: template.sats_per_sec.toString(),
-      duration: Math.floor(template.duration_secs / 60).toString(), // Convert to minutes
-      title: template.name,
-      description: template.description,
+      satsPerSec: Number(template.sats_per_sec || 0).toString(),
+      duration: Math.floor(Number(template.duration_secs || 0) / 60).toString(), // Convert to minutes
+      title: template.name || '',
+      description: template.description || '',
     }));
   };
 
@@ -133,8 +202,9 @@ const CreateStream = () => {
       const safeDescription = formData.description && formData.description.trim() ? formData.description.trim() : null;
       console.log('create_stream args:', recipientPrincipal, satsPerSec, durationSecs, totalLocked, safeTitle, safeDescription, tagsArray);
       if (selectedTemplate) {
+        console.log('Using template with ID:', selectedTemplate.id, 'Type:', typeof selectedTemplate.id);
         streamId = await backend.create_stream_from_template(
-          selectedTemplate.id,
+          Number(selectedTemplate.id),
           recipientPrincipal,
           totalLocked
         );

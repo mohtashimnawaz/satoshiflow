@@ -25,17 +25,37 @@ function principalToText(p) {
 }
 
 // Utility: Deeply convert all BigInt fields to Number
-function deepBigIntToNumber(obj) {
+function deepBigIntToNumber(obj, seen = new Set()) {
   if (typeof obj === 'bigint') return Number(obj);
-  if (Array.isArray(obj)) return obj.map(deepBigIntToNumber);
-  if (obj && typeof obj === 'object') {
-    const out = {};
-    for (const k in obj) {
-      out[k] = deepBigIntToNumber(obj[k]);
-    }
-    return out;
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj !== 'object') return obj;
+  
+  // Avoid circular references
+  if (seen.has(obj)) return obj;
+  seen.add(obj);
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepBigIntToNumber(item, seen));
   }
-  return obj;
+  
+  // Handle special objects like Principal
+  if (obj._isPrincipal || obj.toText || obj._arr) {
+    return obj;
+  }
+  
+  const out = {};
+  for (const k in obj) {
+    if (obj.hasOwnProperty(k)) {
+      try {
+        out[k] = deepBigIntToNumber(obj[k], seen);
+      } catch (error) {
+        // If conversion fails, keep original value
+        console.warn(`Failed to convert ${k}:`, error);
+        out[k] = obj[k];
+      }
+    }
+  }
+  return out;
 }
 
 const Dashboard = () => {
@@ -68,6 +88,7 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
+      console.log('Fetching dashboard data...');
       
       // Check if user is authenticated
       if (!user) {
@@ -75,24 +96,91 @@ const Dashboard = () => {
         return;
       }
       
+      console.log('User for dashboard:', user);
+      console.log('User text representation:', principalToText(user));
+      
       // Fetch recent streams with proper error handling
+      console.log('Calling list_streams_for_user...');
       const userStreams = await satoshiflow_backend.list_streams_for_user(user);
+      console.log('Raw user streams received:', userStreams);
+      console.log('Number of streams:', userStreams ? userStreams.length : 'undefined');
       
       // Deep convert BigInt fields to Number
-      const safeStreams = Array.isArray(userStreams) ? userStreams.map(deepBigIntToNumber) : [];
+      const safeStreams = Array.isArray(userStreams) ? userStreams.map(stream => {
+        try {
+          const converted = deepBigIntToNumber(stream);
+          console.log('Converted stream:', {
+            id: converted.id,
+            sender: principalToText(converted.sender),
+            recipient: principalToText(converted.recipient),
+            status: converted.status,
+            total_locked: converted.total_locked
+          });
+          return converted;
+        } catch (error) {
+          console.error('Error converting stream:', stream, error);
+          return stream;
+        }
+      }) : [];
+      
+      console.log('Safe streams after conversion:', safeStreams);
       
       // Sort by creation time and take the 5 most recent
-      const sortedStreams = safeStreams.sort((a, b) => b.start_time - a.start_time);
-      setRecentStreams(sortedStreams.slice(0, 5));
+      const sortedStreams = safeStreams.sort((a, b) => {
+        const aTime = Number(a.start_time || 0);
+        const bTime = Number(b.start_time || 0);
+        return bTime - aTime;
+      });
       
-      // Calculate stats
-      const sentStreams = safeStreams.filter(s => principalToText(s.sender) === user?.toText());
-      const receivedStreams = safeStreams.filter(s => principalToText(s.recipient) === user?.toText());
-      const activeStreams = safeStreams.filter(s => s.status === 'Active');
+      const recentStreamsToShow = sortedStreams.slice(0, 5);
+      console.log('Recent streams to show:', recentStreamsToShow);
+      setRecentStreams(recentStreamsToShow);
+      
+      // Calculate stats with safer principal comparison
+      const userPrincipalText = principalToText(user);
+      console.log('User principal text for comparison:', userPrincipalText);
+      
+      const sentStreams = safeStreams.filter(s => {
+        const senderText = principalToText(s.sender);
+        const isSender = senderText === userPrincipalText;
+        if (isSender) {
+          console.log('Found sent stream:', { id: s.id, sender: senderText });
+        }
+        return isSender;
+      });
+      
+      const receivedStreams = safeStreams.filter(s => {
+        const recipientText = principalToText(s.recipient);
+        const isRecipient = recipientText === userPrincipalText;
+        if (isRecipient) {
+          console.log('Found received stream:', { id: s.id, recipient: recipientText });
+        }
+        return isRecipient;
+      });
+      
+      const activeStreams = safeStreams.filter(s => {
+        // Handle potential status variations
+        const status = s.status;
+        const isActive = status === 'Active' || (typeof status === 'object' && status.Active !== undefined);
+        return isActive;
+      });
+      
+      console.log('Stream statistics:', {
+        sent: sentStreams.length,
+        received: receivedStreams.length,
+        active: activeStreams.length,
+        total: safeStreams.length
+      });
       
       setStats({
-        totalSent: sentStreams.reduce((sum, s) => sum + (typeof s.total_locked === 'number' ? s.total_locked : 0), 0),
-        totalReceived: receivedStreams.reduce((sum, s) => sum + (typeof s.total_released === 'number' ? s.total_released : 0), 0),
+        totalSent: sentStreams.reduce((sum, s) => {
+          const amount = Number(s.total_locked || 0);
+          return sum + amount;
+        }, 0),
+        totalReceived: receivedStreams.reduce((sum, s) => {
+          const amount = Number(s.total_released || 0);
+          return sum + amount;
+        }, 0),
         activeStreams: activeStreams.length,
         totalStreams: safeStreams.length,
       });

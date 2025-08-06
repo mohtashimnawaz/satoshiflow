@@ -16,17 +16,37 @@ import { Link } from 'react-router-dom';
 import { Principal } from '@dfinity/principal';
 
 // Utility: Deeply convert all BigInt fields to Number
-function deepBigIntToNumber(obj) {
+function deepBigIntToNumber(obj, seen = new Set()) {
   if (typeof obj === 'bigint') return Number(obj);
-  if (Array.isArray(obj)) return obj.map(deepBigIntToNumber);
-  if (obj && typeof obj === 'object') {
-    const out = {};
-    for (const k in obj) {
-      out[k] = deepBigIntToNumber(obj[k]);
-    }
-    return out;
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj !== 'object') return obj;
+  
+  // Avoid circular references
+  if (seen.has(obj)) return obj;
+  seen.add(obj);
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepBigIntToNumber(item, seen));
   }
-  return obj;
+  
+  // Handle special objects like Principal
+  if (obj._isPrincipal || obj.toText || obj._arr) {
+    return obj;
+  }
+  
+  const out = {};
+  for (const k in obj) {
+    if (obj.hasOwnProperty(k)) {
+      try {
+        out[k] = deepBigIntToNumber(obj[k], seen);
+      } catch (error) {
+        // If conversion fails, keep original value
+        console.warn(`Failed to convert ${k}:`, error);
+        out[k] = obj[k];
+      }
+    }
+  }
+  return out;
 }
 
 // Utility: Convert principal (string or Principal) to text

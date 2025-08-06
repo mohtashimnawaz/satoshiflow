@@ -766,6 +766,9 @@ fn create_notification(user: Principal, stream_id: u64, notification_type: Notif
     });
 }
 
+// Export the candid interface
+ic_cdk::export_candid!();
+
 
 
 

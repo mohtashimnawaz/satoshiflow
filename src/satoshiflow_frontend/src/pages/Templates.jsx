@@ -44,10 +44,40 @@ const Templates = () => {
   const fetchTemplates = async () => {
     try {
       setLoading(true);
+      console.log('Fetching templates...');
       const templateList = await satoshiflow_backend.list_templates();
-      setTemplates(templateList);
+      console.log('Templates fetched:', templateList);
+      console.log('Number of templates:', templateList.length);
+      
+      // Convert BigInt values to Numbers for frontend compatibility
+      const convertedTemplates = templateList.map(template => {
+        const converted = {
+          ...template,
+          id: template.id !== undefined ? Number(template.id) : 0,
+          duration_secs: template.duration_secs !== undefined ? Number(template.duration_secs) : 0,
+          sats_per_sec: template.sats_per_sec !== undefined ? Number(template.sats_per_sec) : 0,
+          created_at: template.created_at !== undefined ? Number(template.created_at) : Date.now(),
+          usage_count: template.usage_count !== undefined ? Number(template.usage_count) : 0
+        };
+        
+        // Ensure creator is converted properly
+        if (template.creator) {
+          converted.creator = template.creator;
+        }
+        
+        return converted;
+      });
+      
+      console.log('Converted templates:', convertedTemplates);
+      setTemplates(convertedTemplates);
     } catch (error) {
       console.error('Failed to fetch templates:', error);
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      alert(`Error fetching templates: ${error.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -55,32 +85,103 @@ const Templates = () => {
 
   const handleCreateTemplate = async (e) => {
     e.preventDefault();
+    
+    // Check if user is authenticated
+    if (!user) {
+      alert('You must be logged in to create templates');
+      return;
+    }
+    
+    // Log the user and authentication status
+    console.log('User:', user);
+    console.log('Creating template with user:', principalToText(user));
+    
+    // Validate required fields
+    if (!newTemplate.name.trim()) {
+      alert('Please enter a template name');
+      return;
+    }
+    
+    if (!newTemplate.satsPerSec || parseInt(newTemplate.satsPerSec) <= 0) {
+      alert('Please enter a valid rate (sats/second)');
+      return;
+    }
+    
+    if (!newTemplate.duration || parseInt(newTemplate.duration) <= 0) {
+      alert('Please enter a valid duration (minutes)');
+      return;
+    }
+    
     try {
       setCreateLoading(true);
+      console.log('Creating template with:', {
+        name: newTemplate.name.trim(),
+        description: newTemplate.description.trim(),
+        duration_secs: parseInt(newTemplate.duration) * 60,
+        sats_per_sec: parseInt(newTemplate.satsPerSec)
+      });
       
       const result = await satoshiflow_backend.create_template(
-        newTemplate.name,
-        newTemplate.description,
+        newTemplate.name.trim(),
+        newTemplate.description.trim(),
         parseInt(newTemplate.duration) * 60, // Convert minutes to seconds
         parseInt(newTemplate.satsPerSec)
       );
       
-      if (result.ok) {
+      console.log('Create template result:', result);
+      console.log('Result type:', typeof result);
+      console.log('Result keys:', Object.keys(result || {}));
+      
+      if (result && result.ok !== undefined) {
+        console.log('Template created successfully with ID:', result.ok);
+        alert('Template created successfully!');
         setShowCreateModal(false);
         setNewTemplate({ name: '', description: '', satsPerSec: '', duration: '' });
-        fetchTemplates();
+        await fetchTemplates();
+      } else if (result && result.err) {
+        console.error('Template creation failed:', result.err);
+        alert(`Failed to create template: ${result.err}`);
+      } else {
+        console.log('Unexpected result format, treating as success');
+        alert('Template created successfully!');
+        setShowCreateModal(false);
+        setNewTemplate({ name: '', description: '', satsPerSec: '', duration: '' });
+        await fetchTemplates();
       }
     } catch (error) {
       console.error('Failed to create template:', error);
+      alert(`Error creating template: ${error.message || error}`);
     } finally {
       setCreateLoading(false);
     }
   };
 
   const handleUseTemplate = (template) => {
-    // Store template in localStorage and navigate to create stream
-    localStorage.setItem('selectedTemplate', JSON.stringify(template));
-    window.location.href = '/create';
+    try {
+      console.log('Using template:', template);
+      
+      // Ensure the template data is properly formatted for storage
+      const templateData = {
+        id: template.id,
+        name: template.name,
+        description: template.description,
+        sats_per_sec: Number(template.sats_per_sec || 0),
+        duration_secs: Number(template.duration_secs || 0),
+        creator: principalToText(template.creator),
+        usage_count: Number(template.usage_count || 0)
+      };
+      
+      console.log('Storing template data:', templateData);
+      
+      // Store template in localStorage and navigate to create stream
+      localStorage.setItem('selectedTemplate', JSON.stringify(templateData));
+      
+      // Navigate to create stream page
+      window.location.href = '/create';
+    } catch (error) {
+      console.error('Error using template:', error);
+      alert('Failed to use template. Please try again.');
+    }
   };
 
   const filteredTemplates = templates.filter(template =>
@@ -232,7 +333,19 @@ const Templates = () => {
                     <DollarSign className="h-5 w-5 mr-2 text-orange-400" />
                     Rate
                   </span>
-                  <span className="font-bold text-white">{template.sats_per_sec !== undefined && template.sats_per_sec !== null ? Number(template.sats_per_sec).toLocaleString() : 'N/A'} sats/sec</span>
+                  <span className="font-bold text-white">
+                    {(() => {
+                      try {
+                        const rate = template.sats_per_sec;
+                        if (rate !== undefined && rate !== null) {
+                          return Number(rate).toLocaleString();
+                        }
+                        return 'N/A';
+                      } catch (e) {
+                        return 'N/A';
+                      }
+                    })()} sats/sec
+                  </span>
                 </div>
                 
                 <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
@@ -240,19 +353,50 @@ const Templates = () => {
                     <Clock className="h-5 w-5 mr-2 text-orange-400" />
                     Duration
                   </span>
-                  <span className="font-bold text-white">{formatDuration(template.duration_secs)}</span>
+                  <span className="font-bold text-white">
+                    {(() => {
+                      try {
+                        const duration = template.duration_secs;
+                        if (duration !== undefined && duration !== null) {
+                          return formatDuration(Number(duration));
+                        }
+                        return 'N/A';
+                      } catch (e) {
+                        return 'N/A';
+                      }
+                    })()}
+                  </span>
                 </div>
                 
                 <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
                   <span className="text-slate-400">Total Amount</span>
-                  <span className="font-bold text-orange-400">{template.sats_per_sec !== undefined && template.duration_secs !== undefined && template.sats_per_sec !== null && template.duration_secs !== null ? (Number(template.sats_per_sec) * Number(template.duration_secs)).toLocaleString() : 'N/A'} sats</span>
+                  <span className="font-bold text-orange-400">
+                    {(() => {
+                      try {
+                        const rate = template.sats_per_sec;
+                        const duration = template.duration_secs;
+                        if (rate !== undefined && rate !== null && duration !== undefined && duration !== null) {
+                          return (Number(rate) * Number(duration)).toLocaleString();
+                        }
+                        return 'N/A';
+                      } catch (e) {
+                        return 'N/A';
+                      }
+                    })()} sats
+                  </span>
                 </div>
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-white/20">
                 <div className="flex items-center space-x-2 text-sm text-slate-400">
                   <User className="h-5 w-5 text-orange-400" />
-                  <span>Used {template.usage_count} times</span>
+                  <span>Used {(() => {
+                    try {
+                      return Number(template.usage_count || 0);
+                    } catch (e) {
+                      return 0;
+                    }
+                  })()} times</span>
                 </div>
                 
                 <div className="flex space-x-3">
